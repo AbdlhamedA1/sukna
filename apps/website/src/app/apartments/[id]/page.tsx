@@ -33,6 +33,12 @@ interface ContactInfo {
   whatsAppLink: string;
 }
 
+/** Prefer exact coordinates from the Google Maps link (@lat,lng or ?q=lat,lng); fall back to the address. */
+function mapEmbedQuery(url: string, fallback: string): string {
+  const m = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/) ?? url.match(/[?&](?:q|query|ll)=(-?\d+\.\d+)(?:,|%2C)(-?\d+\.\d+)/);
+  return m ? `${m[1]},${m[2]}` : fallback;
+}
+
 export default function ApartmentDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
@@ -195,7 +201,7 @@ export default function ApartmentDetailPage() {
                   loading="lazy"
                   tabIndex={-1}
                   referrerPolicy="no-referrer-when-downgrade"
-                  src={`https://maps.google.com/maps?q=${encodeURIComponent(`${apartment.buildingId.name} ${apartment.buildingId.streetAddress}`)}&output=embed`}
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(mapEmbedQuery(apartment.buildingId.googleMapsUrl, `${apartment.buildingId.name} ${apartment.buildingId.streetAddress}`))}&output=embed`}
                   className="pointer-events-none h-full w-full border-0"
                 />
                 <span className="absolute bottom-3 right-3 rounded-full bg-brand-primary px-4 py-2 text-sm font-semibold text-white shadow transition group-hover:bg-brand-accent">
