@@ -1,6 +1,7 @@
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import helmet from 'helmet';
 import express, { type Express } from 'express';
 
 import { env } from './config/env.js';
@@ -27,6 +28,7 @@ export function createApp(): Express {
     }),
   );
 
+  app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
   app.use(compression());
 
   // Short shared cache for anonymous public reads (listings, location tree, packages).
