@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 
 import { User } from '../models/User.js';
-import { AUTH_COOKIE_NAME } from '../utils/cookies.js';
+import { audienceOf, cookieNameFor } from '../utils/cookies.js';
 import { verifySessionToken } from '../utils/jwt.js';
 import { httpError } from './errorHandler.js';
 
@@ -13,7 +13,7 @@ import { httpError } from './errorHandler.js';
  */
 export async function requireAuth(req: Request, _res: Response, next: NextFunction) {
   try {
-    const token = req.cookies?.[AUTH_COOKIE_NAME] as string | undefined;
+    const token = req.cookies?.[cookieNameFor(audienceOf(req))] as string | undefined;
     if (!token) throw httpError(401, 'Authentication required.');
 
     let payload;
@@ -29,6 +29,11 @@ export async function requireAuth(req: Request, _res: Response, next: NextFuncti
       throw httpError(401, 'Session has been revoked. Please log in again.');
     }
     if (!user.isActive) throw httpError(403, 'Account is deactivated.');
+    // Strict role separation: dashboard sessions are admin-only, website sessions user-only.
+    const wantsAdmin = audienceOf(req) === 'dashboard';
+    if ((user.role === 'admin') !== wantsAdmin) {
+      throw httpError(403, 'This account cannot be used here.');
+    }
 
     req.user = {
       id: user.id,

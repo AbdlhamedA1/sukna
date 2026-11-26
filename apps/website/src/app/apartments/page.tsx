@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
+import { AuthNav } from '../../components/layout/AuthNav';
 import { ApartmentCard } from '../../components/apartments/ApartmentCard';
 import {
   FilterPanel,
@@ -45,12 +46,7 @@ export default function ApartmentsPage() {
           <a href="/" className="text-xl font-bold text-brand-primary">
             SUKNA <span className="font-arabic">سُكنا</span>
           </a>
-          <a
-            href="/login"
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-brand-primary hover:bg-brand-primary-soft"
-          >
-            Log in
-          </a>
+          <AuthNav />
         </div>
       </header>
 

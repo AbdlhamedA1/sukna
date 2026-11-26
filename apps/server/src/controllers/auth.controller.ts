@@ -6,7 +6,7 @@ import { dispatchOtpEmail } from '../config/mailer.js';
 import { httpError } from '../middleware/errorHandler.js';
 import { User } from '../models/User.js';
 import { VerificationCode, type VerificationPurpose } from '../models/VerificationCode.js';
-import { clearAuthCookie, setAuthCookie } from '../utils/cookies.js';
+import { audienceOf, clearAuthCookie, setAuthCookie } from '../utils/cookies.js';
 import { signResetToken, signSessionToken, verifyResetToken } from '../utils/jwt.js';
 import {
   generateOtpCode,
@@ -167,12 +167,20 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     if (!user.isVerified) throw httpError(403, 'Please verify your email before logging in.');
     if (!user.isActive) throw httpError(403, 'Account is deactivated.');
 
+    const audience = audienceOf(req);
+    if (audience === 'dashboard' && user.role !== 'admin') {
+      throw httpError(403, 'The dashboard is for administrators only. Please use the SUKNA website.');
+    }
+    if (audience === 'website' && user.role === 'admin') {
+      throw httpError(403, 'Administrators sign in through the dashboard.');
+    }
+
     const token = signSessionToken({
       sub: user.id,
       role: user.role,
       tokenVersion: user.tokenVersion,
     });
-    setAuthCookie(res, token);
+    setAuthCookie(res, token, audience);
 
     res.status(200).json({
       success: true,
@@ -188,7 +196,7 @@ export async function logout(req: Request, res: Response, next: NextFunction) {
   try {
     // Incrementing tokenVersion invalidates every live session token (FR-AUTH-08).
     await User.findByIdAndUpdate(req.user!.id, { $inc: { tokenVersion: 1 } });
-    clearAuthCookie(res);
+    clearAuthCookie(res, audienceOf(req));
     res.status(200).json({ success: true, message: 'Logged out successfully.' });
   } catch (error) {
     next(error);
@@ -280,7 +288,7 @@ export async function changePassword(req: Request, res: Response, next: NextFunc
     user.tokenVersion += 1;
     await user.save();
 
-    clearAuthCookie(res);
+    clearAuthCookie(res, audienceOf(req));
     res.status(200).json({ success: true, message: 'Password changed. Please log in again.' });
   } catch (error) {
     next(error);

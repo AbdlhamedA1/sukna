@@ -29,8 +29,13 @@ export default function LoginPage() {
       });
       router.push('/');
       router.refresh();
-    } catch {
-      setError('Login failed. Check your email and password, and make sure your email is verified.');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : '';
+      setError(
+        msg && !msg.startsWith('API request failed')
+          ? msg
+          : 'Login failed. Check your email and password, and make sure your email is verified.',
+      );
     } finally {
       setLoading(false);
     }

@@ -1,3 +1,4 @@
+import { AuthNav } from '../components/layout/AuthNav';
 import { Footer } from '../components/landing/Footer';
 import { FeaturedHomes } from '../components/landing/FeaturedHomes';
 import { WhySukna } from '../components/landing/WhySukna';
@@ -10,20 +11,7 @@ export default function HomePage() {
         <span className="text-xl font-bold text-brand-primary">
           SUKNA <span className="font-arabic">سُكنا</span>
         </span>
-        <nav className="flex items-center gap-2 sm:gap-3">
-          <a
-            href="/login"
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-brand-primary transition hover:bg-brand-primary-soft sm:px-4"
-          >
-            Log in
-          </a>
-          <a
-            href="/register"
-            className="rounded-lg bg-brand-primary px-3 py-2 text-sm font-semibold text-white transition hover:opacity-90 sm:px-4"
-          >
-            Sign up
-          </a>
-        </nav>
+        <AuthNav />
       </header>
 
       <section className="mx-auto flex w-full max-w-container flex-1 flex-col items-center justify-center px-4 py-16 text-center sm:px-8">

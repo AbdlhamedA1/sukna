@@ -35,8 +35,27 @@ export const authApi = apiSlice.injectEndpoints({
       query: (body) => ({ url: '/auth/change-password', method: 'POST', body }),
       invalidatesTags: ['Auth'],
     }),
+    forgotPassword: build.mutation<Envelope<never>, { email: string }>({
+      query: (body) => ({ url: '/auth/forgot-password', method: 'POST', body }),
+    }),
+    verifyResetCode: build.mutation<
+      Envelope<{ resetToken: string }>,
+      { email: string; code: string }
+    >({
+      query: (body) => ({ url: '/auth/verify-reset-code', method: 'POST', body }),
+    }),
+    resetPassword: build.mutation<
+      Envelope<never>,
+      { email: string; resetToken: string; newPassword: string; confirmNewPassword: string }
+    >({
+      query: (body) => ({ url: '/auth/reset-password', method: 'POST', body }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation, useMeQuery, useChangePasswordMutation } =
+export const {
+  useForgotPasswordMutation,
+  useVerifyResetCodeMutation,
+  useResetPasswordMutation,
+  useLoginMutation, useLogoutMutation, useMeQuery, useChangePasswordMutation } =
   authApi;
