@@ -1,0 +1,34 @@
+{
+  "name": "sukna",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SUKNA (سُكنا) — Student & Residential Housing Marketplace for Upper Egypt (Qena, Sohag, Minya)",
+  "workspaces": [
+    "apps/website",
+    "apps/dashboard",
+    "apps/server"
+  ],
+  "scripts": {
+    "dev:website": "npm run dev --workspace apps/website",
+    "dev:dashboard": "npm run dev --workspace apps/dashboard",
+    "dev:server": "npm run dev --workspace apps/server",
+    "build": "npm run build --workspaces --if-present",
+    "start:server": "npm run start --workspace apps/server",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.12.0",
+    "prettier": "^3.4.1",
+    "typescript-eslint": "^8.15.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}
