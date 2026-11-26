@@ -72,7 +72,7 @@ export default function ApartmentsPage() {
         <section className="flex-1 pb-24 lg:pb-8">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <h1 className="text-xl font-bold text-brand-primary sm:text-2xl">
-              {result ? `${result.pagination.total} homes` : 'Homes'}
+              {result ? `${result.pagination.total} ${result.pagination.total === 1 ? "home" : "homes"}` : 'Homes'}
             </h1>
             <select
               aria-label="Sort by"

@@ -1,3 +1,6 @@
+import { Footer } from '../components/landing/Footer';
+import { FeaturedHomes } from '../components/landing/FeaturedHomes';
+import { WhySukna } from '../components/landing/WhySukna';
 import { HeroSearch } from '../components/locations/HeroSearch';
 
 export default function HomePage() {
@@ -39,9 +42,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className="border-t border-brand-border py-6 text-center text-sm text-brand-muted">
-        SUKNA &mdash; verified housing discovery for Upper Egypt.
-      </footer>
+      <FeaturedHomes />
+      <WhySukna />
+      <Footer />
     </main>
   );
 }
