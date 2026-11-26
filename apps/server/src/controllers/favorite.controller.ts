@@ -41,11 +41,11 @@ export async function addFavorite(req: Request, res: Response, next: NextFunctio
     if (!Types.ObjectId.isValid(apartmentId)) throw httpError(404, 'Apartment not found.');
     const apartment = await Apartment.findOne({ _id: apartmentId, ...LIVE });
     if (!apartment) throw httpError(404, 'Apartment not found.');
-    try {
-      await Favorite.create({ userId: req.user!.id, apartmentId });
-    } catch (e) {
-      if ((e as { code?: number }).code !== 11000) throw e; // already saved: idempotent
-    }
+    await Favorite.updateOne(
+      { userId: req.user!.id, apartmentId },
+      { $setOnInsert: { userId: req.user!.id, apartmentId } },
+      { upsert: true },
+    );
     res.status(201).json({ success: true, message: 'Saved to favorites.' });
   } catch (err) {
     next(err);

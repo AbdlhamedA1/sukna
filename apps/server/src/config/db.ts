@@ -14,6 +14,14 @@ export async function connectDatabase(): Promise<void> {
     autoIndex: env.nodeEnv !== 'production',
   });
 
+  // Production keeps autoIndex off to avoid surprise builds, but unique indexes
+  // (email, favorites, one payment per order) must exist. createIndexes is idempotent.
+  await Promise.all(
+    Object.values(mongoose.models).map((m) =>
+      m.createIndexes().catch((e: unknown) => console.warn(`[db] index build failed for ${m.modelName}:`, e)),
+    ),
+  );
+
   mongoose.connection.on('error', (error) => {
     console.error('[db] MongoDB connection error:', error);
   });
