@@ -13,20 +13,21 @@ export const AUTH_COOKIE_NAME = 'sukna_token';
 export function setAuthCookie(res: Response, token: string): void {
   res.cookie(AUTH_COOKIE_NAME, token, {
     httpOnly: true,
-    sameSite: 'lax',
+    // Cross-site frontends (staging on separate domains) need SameSite=None.
+    sameSite: env.isProduction() ? 'none' : 'lax',
     secure: env.isProduction(),
     path: '/',
     maxAge: SESSION_TTL_SECONDS * 1000,
-    ...(env.isProduction() ? { domain: '.sukna.com' } : {}),
+    ...(env.cookieDomain ? { domain: env.cookieDomain } : {}),
   });
 }
 
 export function clearAuthCookie(res: Response): void {
   res.clearCookie(AUTH_COOKIE_NAME, {
     httpOnly: true,
-    sameSite: 'lax',
+    sameSite: env.isProduction() ? 'none' : 'lax',
     secure: env.isProduction(),
     path: '/',
-    ...(env.isProduction() ? { domain: '.sukna.com' } : {}),
+    ...(env.cookieDomain ? { domain: env.cookieDomain } : {}),
   });
 }

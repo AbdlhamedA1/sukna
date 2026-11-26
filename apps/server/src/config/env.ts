@@ -25,6 +25,7 @@ export const env = {
   bcryptSaltRounds: toInt(required('BCRYPT_SALT_ROUNDS', '12'), 'BCRYPT_SALT_ROUNDS'),
   websiteUrl: required('WEBSITE_URL', 'http://localhost:3000'),
   dashboardUrl: required('DASHBOARD_URL', 'http://localhost:5173'),
+  cookieDomain: process.env.COOKIE_DOMAIN,
   isProduction(): boolean {
     return this.nodeEnv === 'production';
   },
