@@ -208,3 +208,17 @@ export async function deleteBuilding(req: Request, res: Response, next: NextFunc
     next(err);
   }
 }
+
+/** GET /buildings/admin/all - admin, full list incl. archived/inactive (excludes soft-deleted). */
+export async function listBuildingsAdmin(req: Request, res: Response, next: NextFunction) {
+  try {
+    const filter: Record<string, unknown> = { isDeleted: false };
+    if (req.query.isArchived !== undefined) filter.isArchived = req.query.isArchived === 'true';
+    const buildings = await Building.find(filter)
+      .populate('governorateId cityId areaId', 'nameEn nameAr type')
+      .sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: { buildings } });
+  } catch (err) {
+    next(err);
+  }
+}

@@ -21,6 +21,7 @@ export const apartmentRouter = Router();
 
 // ---- Buildings ----
 buildingRouter.get('/', validateQuery(buildingQuerySchema), buildingController.listBuildings);
+buildingRouter.get('/admin/all', requireAuth, requireAdmin, buildingController.listBuildingsAdmin);
 buildingRouter.get('/:id', buildingController.getBuilding);
 buildingRouter.post(
   '/',
@@ -55,6 +56,7 @@ buildingRouter.delete(
 
 // ---- Apartments ----
 apartmentRouter.get('/', validateQuery(apartmentQuerySchema), apartmentController.listApartments);
+apartmentRouter.get('/admin/all', requireAuth, requireAdmin, apartmentController.listApartmentsAdmin);
 apartmentRouter.get('/:id', apartmentController.getApartment);
 apartmentRouter.get(
   '/:id/contact',

@@ -41,9 +41,20 @@ export function HomePage() {
           </Paragraph>
         )}
         {user ? (
-          <Button danger onClick={onLogout} loading={isLoading}>
-            Log out
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button type="primary" href="/locations">
+              Locations
+            </Button>
+            <Button type="primary" href="/buildings">
+              Buildings
+            </Button>
+            <Button type="primary" href="/apartments">
+              Apartments
+            </Button>
+            <Button danger onClick={onLogout} loading={isLoading}>
+              Log out
+            </Button>
+          </div>
         ) : (
           <Button type="primary" href="/login">
             Sign in

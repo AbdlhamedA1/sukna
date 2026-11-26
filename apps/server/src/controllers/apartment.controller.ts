@@ -268,3 +268,19 @@ export async function deleteApartment(req: Request, res: Response, next: NextFun
     next(err);
   }
 }
+
+/** GET /apartments/admin/all - admin moderation list, all statuses, includes owner contact. */
+export async function listApartmentsAdmin(req: Request, res: Response, next: NextFunction) {
+  try {
+    const filter: Record<string, unknown> = { isDeleted: false };
+    if (req.query.listingStatus) filter.listingStatus = req.query.listingStatus;
+    const apartments = await Apartment.find(filter)
+      .select('-internalAdminNotes')
+      .populate('buildingId', 'name streetAddress governorateId cityId areaId')
+      .sort({ createdAt: -1 })
+      .limit(500);
+    res.status(200).json({ success: true, data: { apartments } });
+  } catch (err) {
+    next(err);
+  }
+}

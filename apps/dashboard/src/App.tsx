@@ -4,6 +4,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { store } from './app/store';
 import { AppProviders } from './components/AppProviders';
 import { ProtectedRoute } from './features/auth/RouteGuards';
+import { ApartmentsPage } from './pages/ApartmentsPage';
+import { BuildingsPage } from './pages/BuildingsPage';
 import { HomePage } from './pages/HomePage';
 import { LocationsPage } from './pages/LocationsPage';
 import { LoginPage } from './pages/LoginPage';
@@ -29,6 +31,22 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <LocationsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/buildings"
+              element={
+                <ProtectedRoute>
+                  <BuildingsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/apartments"
+              element={
+                <ProtectedRoute>
+                  <ApartmentsPage />
                 </ProtectedRoute>
               }
             />
