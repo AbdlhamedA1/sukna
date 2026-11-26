@@ -8,8 +8,7 @@ import {
   Popconfirm,
   Select,
   Table,
-  Tag,
-} from 'antd';
+  Tag, Image } from 'antd';
 import { useMemo, useState } from 'react';
 
 import {
@@ -72,7 +71,7 @@ export function BuildingsPage() {
       key: 'name',
       render: (_: unknown, b: BuildingItem) => (
         <div className="flex items-center gap-3">
-          <img src={b.mainImage} alt="" className="h-10 w-14 rounded object-cover" />
+          <Image src={b.mainImage} alt="" width={56} height={40} className="rounded object-cover" style={{ objectFit: 'cover', borderRadius: 4 }} />
           <div>
             <div className="font-semibold">{b.name}</div>
             <div className="text-xs text-brand-muted">{b.streetAddress}</div>

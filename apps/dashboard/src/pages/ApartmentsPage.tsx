@@ -9,8 +9,7 @@ import {
   Popconfirm,
   Select,
   Table,
-  Tag,
-} from 'antd';
+  Tag, Image } from 'antd';
 import { useState } from 'react';
 
 import {
@@ -88,7 +87,7 @@ export function ApartmentsPage() {
       render: (_: unknown, a: ApartmentAdminItem) => (
         <div className="flex items-center gap-3">
           {a.images[0] ? (
-            <img src={a.images[0]} alt="" className="h-10 w-14 rounded object-cover" />
+            <Image src={a.images[0]} alt="" width={56} height={40} className="rounded object-cover" style={{ objectFit: 'cover', borderRadius: 4 }} />
           ) : null}
           <div>
             <div className="font-semibold">{a.title}</div>

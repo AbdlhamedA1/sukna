@@ -8,3 +8,44 @@
     font-feature-settings: 'tnum';
   }
 }
+
+/* Every clickable element shows the pointer (finger) cursor and responds on hover. */
+a[href],
+button:not(:disabled),
+[role='button'],
+summary,
+select,
+label[for],
+input[type='checkbox'],
+input[type='radio'],
+input[type='submit'],
+.ant-btn:not([disabled]),
+.ant-select:not(.ant-select-disabled) .ant-select-selector {
+  cursor: pointer;
+}
+button:disabled,
+.ant-btn[disabled] {
+  cursor: not-allowed;
+}
+a[href],
+button {
+  transition: transform 150ms ease, box-shadow 150ms ease, background-color 150ms ease,
+    opacity 150ms ease;
+}
+button:not(:disabled):hover,
+a.btn-hover:hover {
+  transform: translateY(-1px);
+}
+button:not(:disabled):active {
+  transform: translateY(0) scale(0.98);
+}
+.ant-btn-primary:not([disabled]):hover {
+  box-shadow: 0 6px 16px rgba(232, 138, 53, 0.35);
+}
+/* Cards/images that open a detail page */
+a[href] img {
+  transition: transform 300ms ease, filter 200ms ease;
+}
+a[href]:hover img {
+  filter: brightness(1.04);
+}

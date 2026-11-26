@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Cairo, Inter } from 'next/font/google';
 
+import { AntdProvider } from '../components/AntdProvider';
 import './globals.css';
 
 // English LTR is the primary interface language; Cairo is preloaded as a
@@ -20,7 +21,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" dir="ltr" className={`${inter.variable} ${cairo.variable}`}>
-      <body>{children}</body>
+      <body>
+        <AntdProvider>{children}</AntdProvider>
+      </body>
     </html>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { Image } from 'antd';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -35,6 +36,7 @@ export default function ApartmentDetailPage() {
   const router = useRouter();
   const [apartment, setApartment] = useState<ApartmentDetail | null>(null);
   const [activeImage, setActiveImage] = useState(0);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [contact, setContact] = useState<ContactInfo | null>(null);
   const [contactError, setContactError] = useState('');
   const [showContact, setShowContact] = useState(false);
@@ -92,11 +94,32 @@ export default function ApartmentDetailPage() {
 
         {/* Gallery */}
         <div className="overflow-hidden rounded-2xl border border-brand-border bg-white">
-          <img
-            src={apartment.images[activeImage]}
-            alt={apartment.title}
-            className="aspect-[16/9] w-full object-cover"
-          />
+          <button
+            type="button"
+            onClick={() => setPreviewOpen(true)}
+            aria-label="Open image full screen"
+            className="group block w-full cursor-pointer overflow-hidden"
+          >
+            <img
+              src={apartment.images[activeImage]}
+              alt={apartment.title}
+              className="aspect-[16/9] w-full object-cover transition duration-300 group-hover:scale-[1.03] group-hover:brightness-95"
+            />
+          </button>
+          <div style={{ display: 'none' }}>
+            <Image.PreviewGroup
+              preview={{
+                visible: previewOpen,
+                current: activeImage,
+                onVisibleChange: setPreviewOpen,
+                onChange: setActiveImage,
+              }}
+            >
+              {apartment.images.map((src, i) => (
+                <Image key={src + i} src={src} alt={apartment.title} />
+              ))}
+            </Image.PreviewGroup>
+          </div>
           {apartment.images.length > 1 ? (
             <div className="flex gap-2 overflow-x-auto p-3">
               {apartment.images.map((src, i) => (
@@ -104,7 +127,7 @@ export default function ApartmentDetailPage() {
                   key={src + i}
                   type="button"
                   onClick={() => setActiveImage(i)}
-                  className={`h-16 w-24 shrink-0 overflow-hidden rounded-lg border-2 ${
+                  className={`h-16 w-24 shrink-0 cursor-pointer overflow-hidden rounded-lg border-2 transition hover:opacity-80 ${
                     i === activeImage ? 'border-brand-accent' : 'border-transparent'
                   }`}
                 >

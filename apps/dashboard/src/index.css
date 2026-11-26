@@ -8,3 +8,38 @@
     font-feature-settings: 'tnum';
   }
 }
+
+/* Every clickable element shows the pointer (finger) cursor and reacts on hover. */
+a[href],
+button:not(:disabled),
+[role='button'],
+select,
+label[for],
+input[type='checkbox'],
+input[type='radio'],
+.ant-btn:not([disabled]),
+.ant-table-row-expand-icon,
+.ant-switch,
+.ant-select:not(.ant-select-disabled) .ant-select-selector,
+.ant-pagination-item,
+.ant-image,
+.ant-image-img,
+.ant-menu-item,
+.ant-tabs-tab {
+  cursor: pointer;
+}
+.ant-btn:not([disabled]) {
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+.ant-btn:not([disabled]):hover {
+  transform: translateY(-1px);
+}
+.ant-btn-primary:not([disabled]):hover {
+  box-shadow: 0 6px 16px rgba(18, 59, 53, 0.3);
+}
+.ant-image-img {
+  transition: filter 200ms ease, transform 200ms ease;
+}
+.ant-image:hover .ant-image-img {
+  filter: brightness(1.08);
+}

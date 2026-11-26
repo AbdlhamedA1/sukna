@@ -13,7 +13,7 @@ export function ApartmentCard({ apartment }: { apartment: ApartmentListItem }) {
   return (
     <Link
       href={`/apartments/${apartment._id}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-brand-border bg-white shadow-sm transition hover:shadow-md"
+      className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-brand-border bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg"
     >
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-brand-surface">
         {/* Plain img keeps the template dependency-free; images are admin-curated Cloudinary URLs. */}
