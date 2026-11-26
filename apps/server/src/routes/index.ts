@@ -1,7 +1,10 @@
 import { Router } from 'express';
 
 import { getHealth } from '../controllers/health.controller.js';
+import { adminRouter } from './admin.routes.js';
+import { favoriteRouter } from './favorite.routes.js';
 import { authRouter } from './auth.routes.js';
+import { monetizationRouter } from './monetization.routes.js';
 import { locationRouter } from './location.routes.js';
 import { apartmentRouter, buildingRouter } from './property.routes.js';
 
@@ -16,3 +19,6 @@ apiV1Router.use('/auth', authRouter);
 apiV1Router.use('/locations', locationRouter);
 apiV1Router.use('/buildings', buildingRouter);
 apiV1Router.use('/apartments', apartmentRouter);
+apiV1Router.use('/monetization', monetizationRouter);
+apiV1Router.use('/favorites', favoriteRouter);
+apiV1Router.use('/admin', adminRouter);

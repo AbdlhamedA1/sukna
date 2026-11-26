@@ -4,6 +4,7 @@ import { Types } from 'mongoose';
 import { httpError } from '../middleware/errorHandler.js';
 import { Apartment } from '../models/Apartment.js';
 import { AuditLog } from '../models/AuditLog.js';
+import { AdvertisingOrder } from '../models/AdvertisingOrder.js';
 import { Building } from '../models/Building.js';
 
 const PUBLIC_LISTING = {
@@ -20,6 +21,16 @@ const SORTS: Record<string, Record<string, 1 | -1>> = {
   price_asc: { rentalPrice: 1 },
   price_desc: { rentalPrice: -1 },
 };
+
+/** Apartment ids that currently have a paid, unexpired advertising order. */
+async function featuredIds(ids: unknown[]): Promise<Set<string>> {
+  const rows = await AdvertisingOrder.find({
+    apartmentId: { $in: ids },
+    orderStatus: 'active',
+    endDate: { $gt: new Date() },
+  }).select('apartmentId');
+  return new Set(rows.map((r) => String(r.apartmentId)));
+}
 
 const CONTACT_REVEAL_LIMIT = 20;
 const CONTACT_REVEAL_WINDOW_MS = 60 * 60 * 1000;
@@ -81,10 +92,13 @@ export async function listApartments(req: Request, res: Response, next: NextFunc
       Apartment.countDocuments(filter),
     ]);
 
+    const featured = await featuredIds(items.map((i) => i._id));
+    const apartments = items.map((i) => ({ ...i.toObject(), isFeatured: featured.has(String(i._id)) }));
+
     res.status(200).json({
       success: true,
       data: {
-        apartments: items,
+        apartments,
         pagination: { page: q.page, limit: q.limit, total, pages: Math.ceil(total / q.limit) },
       },
     });
@@ -101,7 +115,11 @@ export async function getApartment(req: Request, res: Response, next: NextFuncti
       .select(PUBLIC_PROJECTION)
       .populate('buildingId');
     if (!apartment) return next(httpError(404, 'Apartment not found.'));
-    res.status(200).json({ success: true, data: { apartment } });
+    const featured = await featuredIds([apartment._id]);
+    res.status(200).json({
+      success: true,
+      data: { apartment: { ...apartment.toObject(), isFeatured: featured.has(String(apartment._id)) } },
+    });
   } catch (err) {
     next(err);
   }
