@@ -21,3 +21,19 @@ export function validateBody(schema: ZodSchema) {
     next();
   };
 }
+
+/** Same strict validation for query strings; parsed values replace req.query. */
+export function validateQuery(schema: ZodSchema) {
+  return (req: Request, _res: Response, next: NextFunction) => {
+    const result = schema.safeParse(req.query);
+    if (!result.success) {
+      const errors = result.error.issues.map((issue) => ({
+        field: issue.path.join('.') || 'query',
+        message: issue.message,
+      }));
+      return next(httpError(400, 'Validation failed.', errors));
+    }
+    req.query = result.data;
+    next();
+  };
+}

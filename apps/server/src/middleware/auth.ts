@@ -30,7 +30,12 @@ export async function requireAuth(req: Request, _res: Response, next: NextFuncti
     }
     if (!user.isActive) throw httpError(403, 'Account is deactivated.');
 
-    req.user = { id: user.id, role: user.role, tokenVersion: user.tokenVersion };
+    req.user = {
+      id: user.id,
+      role: user.role,
+      tokenVersion: user.tokenVersion,
+      isVerified: user.isVerified,
+    };
     next();
   } catch (error) {
     next(error);
@@ -41,5 +46,12 @@ export async function requireAuth(req: Request, _res: Response, next: NextFuncti
 export function requireAdmin(req: Request, _res: Response, next: NextFunction) {
   if (!req.user) return next(httpError(401, 'Authentication required.'));
   if (req.user.role !== 'admin') return next(httpError(403, 'Administrator access required.'));
+  next();
+}
+
+/** Verified-email gate for sensitive disclosures (e.g. landlord contact). */
+export function requireVerified(req: Request, _res: Response, next: NextFunction) {
+  if (!req.user) return next(httpError(401, 'Authentication required.'));
+  if (!req.user.isVerified) return next(httpError(403, 'Email verification required.'));
   next();
 }
