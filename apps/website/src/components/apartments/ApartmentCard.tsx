@@ -2,6 +2,8 @@ import Link from 'next/link';
 
 import type { ApartmentListItem } from '../../types/apartments';
 
+import { FavoriteButton } from './FavoriteButton';
+
 const RENTAL_LABEL = { entire: 'Entire place', shared: 'Shared', private_room: 'Private room' };
 const FURNISHED_LABEL = {
   furnished: 'Furnished',
@@ -22,7 +24,16 @@ export function ApartmentCard({ apartment }: { apartment: ApartmentListItem }) {
           alt={apartment.title}
           className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
           loading="lazy"
+          decoding="async"
+          width={400}
+          height={300}
         />
+        {apartment.isFeatured ? (
+          <span className="absolute bottom-3 left-3 rounded-full bg-amber-400 px-3 py-1 text-xs font-bold text-brand-primary">
+            Featured
+          </span>
+        ) : null}
+        <FavoriteButton apartmentId={apartment._id} className="absolute right-3 top-3" />
         <span className="absolute left-3 top-3 rounded-full bg-brand-primary px-3 py-1 text-xs font-semibold text-white">
           {RENTAL_LABEL[apartment.rentalType]}
         </span>

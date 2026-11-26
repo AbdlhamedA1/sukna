@@ -8,6 +8,7 @@ export interface ApartmentListItem {
   floor: number;
   furnishedStatus: 'furnished' | 'semi_furnished' | 'unfurnished';
   images: string[];
+  isFeatured?: boolean;
   buildingId: {
     _id: string;
     name: string;

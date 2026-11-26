@@ -93,7 +93,9 @@ export async function listApartments(req: Request, res: Response, next: NextFunc
     ]);
 
     const featured = await featuredIds(items.map((i) => i._id));
-    const apartments = items.map((i) => ({ ...i.toObject(), isFeatured: featured.has(String(i._id)) }));
+    const apartments = items
+      .map((i) => ({ ...i.toObject(), isFeatured: featured.has(String(i._id)) }))
+      .sort((a, b) => Number(b.isFeatured) - Number(a.isFeatured)); // stable: featured float up within the page
 
     res.status(200).json({
       success: true,

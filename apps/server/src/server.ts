@@ -1,3 +1,4 @@
+import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { type Express } from 'express';
@@ -25,6 +26,19 @@ export function createApp(): Express {
       credentials: true,
     }),
   );
+
+  app.use(compression());
+
+  // Short shared cache for anonymous public reads (listings, location tree, packages).
+  app.use((req, res, next) => {
+    if (
+      req.method === 'GET' &&
+      /^\/api\/v1\/(apartments|locations\/tree|monetization\/packages)\/?$/.test(req.path)
+    ) {
+      res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=120');
+    }
+    next();
+  });
 
   app.use(express.json({ limit: '1mb' }));
   app.use(express.urlencoded({ extended: true }));

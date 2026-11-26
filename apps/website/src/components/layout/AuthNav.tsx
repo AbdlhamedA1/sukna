@@ -11,6 +11,9 @@ export function AuthNav() {
   if (user) {
     return (
       <nav className="flex items-center gap-2 sm:gap-3">
+        <a href="/saved" className={link}>
+          Saved
+        </a>
         <a href="/profile" className={link}>
           {user.fullName.split(' ')[0]}
         </a>

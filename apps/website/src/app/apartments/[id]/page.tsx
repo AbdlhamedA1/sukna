@@ -4,6 +4,7 @@ import { Image } from 'antd';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import { FavoriteButton } from '../../../components/apartments/FavoriteButton';
 import { apiFetch } from '../../../lib/api';
 
 interface ApartmentDetail {
@@ -17,6 +18,7 @@ interface ApartmentDetail {
   floor: number;
   furnishedStatus: string;
   images: string[];
+  isFeatured?: boolean;
   buildingId: {
     _id: string;
     name: string;
@@ -103,6 +105,8 @@ export default function ApartmentDetailPage() {
             <img
               src={apartment.images[activeImage]}
               alt={apartment.title}
+              fetchPriority="high"
+              decoding="async"
               className="aspect-[16/9] w-full object-cover transition duration-300 group-hover:scale-[1.03] group-hover:brightness-95"
             />
           </button>
@@ -131,7 +135,7 @@ export default function ApartmentDetailPage() {
                     i === activeImage ? 'border-brand-accent' : 'border-transparent'
                   }`}
                 >
-                  <img src={src} alt="" className="h-full w-full object-cover" />
+                  <img src={src} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
                 </button>
               ))}
             </div>
@@ -140,10 +144,23 @@ export default function ApartmentDetailPage() {
 
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
           <section className="rounded-2xl border border-brand-border bg-white p-5 sm:p-6 lg:col-span-2">
-            <p className="text-2xl font-bold text-brand-accent">
-              EGP {apartment.rentalPrice.toLocaleString()}
-              <span className="text-base font-normal text-brand-muted"> /month</span>
-            </p>
+            <div className="flex items-start justify-between gap-3">
+              <p className="text-2xl font-bold text-brand-accent">
+                EGP {apartment.rentalPrice.toLocaleString()}
+                <span className="text-base font-normal text-brand-muted"> /month</span>
+              </p>
+              <div className="flex items-center gap-2">
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(`${apartment.title} on SUKNA: ${typeof window !== 'undefined' ? window.location.href : ''}`)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex h-10 cursor-pointer items-center rounded-full border border-brand-border px-4 text-sm font-semibold text-brand-primary transition hover:bg-brand-primary-soft"
+                >
+                  Share
+                </a>
+                <FavoriteButton apartmentId={apartment._id} className="border border-brand-border" />
+              </div>
+            </div>
             <h1 className="mt-1 text-xl font-bold text-brand-primary sm:text-2xl">
               {apartment.title}
             </h1>
@@ -160,17 +177,30 @@ export default function ApartmentDetailPage() {
           </section>
 
           <aside className="flex flex-col gap-4">
-            <div className="rounded-2xl border border-brand-border bg-white p-5">
-              <h2 className="font-bold text-brand-primary">Building</h2>
-              <p className="mt-1 text-sm text-brand-ink">{apartment.buildingId.name}</p>
-              <p className="text-sm text-brand-muted">{apartment.buildingId.streetAddress}</p>
+            <div className="overflow-hidden rounded-2xl border border-brand-border bg-white">
+              <div className="p-5 pb-3">
+                <h2 className="font-bold text-brand-primary">Location</h2>
+                <p className="mt-1 text-sm text-brand-ink">{apartment.buildingId.name}</p>
+                <p className="text-sm text-brand-muted">{apartment.buildingId.streetAddress}</p>
+              </div>
               <a
                 href={apartment.buildingId.googleMapsUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-3 inline-block text-sm font-semibold text-brand-primary hover:underline"
+                aria-label="Open this location in Google Maps"
+                className="group relative block h-56 w-full cursor-pointer"
               >
-                View on Google Maps
+                <iframe
+                  title={`Map of ${apartment.buildingId.name}`}
+                  loading="lazy"
+                  tabIndex={-1}
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(`${apartment.buildingId.name} ${apartment.buildingId.streetAddress}`)}&output=embed`}
+                  className="pointer-events-none h-full w-full border-0"
+                />
+                <span className="absolute bottom-3 right-3 rounded-full bg-brand-primary px-4 py-2 text-sm font-semibold text-white shadow transition group-hover:bg-brand-accent">
+                  Open in Google Maps
+                </span>
               </a>
             </div>
 

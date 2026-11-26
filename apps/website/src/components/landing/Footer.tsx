@@ -14,6 +14,7 @@ export function Footer() {
           <p className="text-sm font-semibold">Explore</p>
           <ul className="mt-3 space-y-2 text-sm text-white/70">
             <li><a className="hover:text-white" href="/apartments">Browse homes</a></li>
+            <li><a className="hover:text-white" href="/packages">Advertise with us</a></li>
             <li><a className="hover:text-white" href="/#why">Why SUKNA</a></li>
           </ul>
         </div>
