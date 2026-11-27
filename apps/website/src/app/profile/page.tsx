@@ -6,7 +6,6 @@ import { FormField } from '../../components/auth/FormField';
 import { SubmitButton } from '../../components/auth/SubmitButton';
 import { apiFetch } from '../../lib/api';
 import { logoutAndGoHome, useSession } from '../../lib/session';
-import { Logo } from '../../components/Logo';
 
 export default function ProfilePage() {
   const user = useSession();
@@ -49,19 +48,10 @@ export default function ProfilePage() {
   }
 
   return (
-    <main className="min-h-screen bg-brand-surface">
-      <header className="border-b border-brand-border bg-white">
-        <div className="mx-auto flex w-full max-w-container items-center justify-between px-4 py-4 sm:px-8">
-          <Logo />
-          <a href="/apartments" className="text-sm font-semibold text-brand-primary hover:underline">
-            Browse homes
-          </a>
-        </div>
-      </header>
-
+    <main className="min-h-screen bg-brand-canvas">
       <div className="mx-auto grid w-full max-w-container gap-6 px-4 py-10 sm:px-8 lg:grid-cols-2">
-        <section className="rounded-2xl border border-brand-border bg-white p-6">
-          <h1 className="text-2xl font-bold text-brand-primary">Your profile</h1>
+        <section className="rounded-3xl border border-brand-border bg-white p-6 shadow-sm sm:p-8">
+          <h1 className="text-2xl font-extrabold text-brand-primary">Your profile</h1>
           {user ? (
             <dl className="mt-6 space-y-4 text-sm">
               <div>
@@ -93,7 +83,7 @@ export default function ProfilePage() {
           </button>
         </section>
 
-        <section className="rounded-2xl border border-brand-border bg-white p-6">
+        <section className="rounded-3xl border border-brand-border bg-white p-6 shadow-sm sm:p-8">
           <h2 className="text-xl font-bold text-brand-primary">Change password</h2>
           <p className="mt-1 text-sm text-brand-muted">
             You will be signed out afterwards and can log in with the new password.

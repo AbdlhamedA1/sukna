@@ -75,7 +75,7 @@ export function AdminLayout() {
     <Layout className="min-h-screen">
       {desktop && (
         <Layout.Sider width={230} theme="light" className="!sticky top-0 h-screen border-r border-brand-border">
-          <div className="px-5 py-5"><img src="/logo-h.png" alt="SUKNA Admin" className="h-11 w-auto" /></div>
+          <div className="px-5 py-5"><img src="/logo-header.png" alt="SUKNA Admin" className="h-11 w-auto" /></div>
           {menu}
         </Layout.Sider>
       )}
@@ -85,7 +85,7 @@ export function AdminLayout() {
             {!desktop && (
               <Button aria-label="Open menu" icon={<MenuOutlined />} onClick={() => setOpen(true)} />
             )}
-            {!desktop && <img src="/logo-h.png" alt="SUKNA Admin" className="h-9 w-auto" />}
+            {!desktop && <img src="/logo-header.png" alt="SUKNA Admin" className="h-9 w-auto" />}
           </div>
           <div className="flex items-center gap-3">
             <span className="hidden text-sm text-brand-muted sm:inline">{data?.data.user.email}</span>
@@ -98,7 +98,7 @@ export function AdminLayout() {
           <Outlet />
         </Layout.Content>
       </Layout>
-      <Drawer placement="left" open={open} onClose={() => setOpen(false)} width={260} title={<img src="/logo-h.png" alt="SUKNA Admin" className="h-9 w-auto" />} styles={{ body: { padding: 0 } }}>
+      <Drawer placement="left" open={open} onClose={() => setOpen(false)} width={260} title={<img src="/logo-header.png" alt="SUKNA Admin" className="h-9 w-auto" />} styles={{ body: { padding: 0 } }}>
         {menu}
       </Drawer>
     </Layout>

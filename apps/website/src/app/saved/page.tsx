@@ -3,11 +3,9 @@
 import { useEffect, useState } from 'react';
 
 import { ApartmentCard } from '../../components/apartments/ApartmentCard';
-import { AuthNav } from '../../components/layout/AuthNav';
 import { apiFetch } from '../../lib/api';
 import { useFavorites } from '../../lib/favorites';
 import type { ApartmentListItem } from '../../types/apartments';
-import { Logo } from '../../components/Logo';
 
 export default function SavedPage() {
   const [items, setItems] = useState<ApartmentListItem[] | null>(null);
@@ -23,28 +21,25 @@ export default function SavedPage() {
   const shown = items && ready ? items.filter((a) => ids.has(a._id)) : null;
 
   return (
-    <main className="min-h-screen bg-brand-surface pb-16">
-      <header className="border-b border-brand-border bg-white">
-        <div className="mx-auto flex w-full max-w-container items-center justify-between px-4 py-4 sm:px-8">
-          <Logo />
-          <AuthNav />
-        </div>
-      </header>
-      <div className="mx-auto w-full max-w-container px-4 py-8 sm:px-8">
-        <h1 className="text-2xl font-bold text-brand-primary">Saved homes</h1>
+    <main className="min-h-screen bg-brand-canvas pb-16">
+      <div className="mx-auto w-full max-w-container px-4 py-10 sm:px-8">
+        <h1 className="text-2xl font-extrabold text-brand-primary sm:text-3xl">Favorites</h1>
         {signedOut ? (
           <p className="mt-6 text-brand-muted">
             <a href="/login" className="font-semibold text-brand-accent underline">Log in</a> to see the homes you saved.
           </p>
         ) : shown === null ? (
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[0, 1, 2].map((i) => <div key={i} className="aspect-[4/3] animate-pulse rounded-2xl bg-brand-primary-soft" />)}
+            {[0, 1, 2].map((i) => <div key={i} className="aspect-[4/3] animate-pulse rounded-3xl bg-brand-primary-soft" />)}
           </div>
         ) : shown.length === 0 ? (
-          <div className="mt-10 rounded-2xl border border-dashed border-brand-border bg-white p-10 text-center">
-            <p className="font-semibold text-brand-ink">Nothing saved yet</p>
+          <div className="mt-10 rounded-3xl border border-dashed border-brand-border bg-white p-12 text-center">
+            <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden fill="none" stroke="#3C8F86" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="mx-auto">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+            <p className="mt-4 font-semibold text-brand-ink">Nothing saved yet</p>
             <p className="mt-1 text-sm text-brand-muted">Tap the heart on any home to keep it here.</p>
-            <a href="/apartments" className="mt-4 inline-block rounded-lg bg-brand-accent px-5 py-3 font-semibold text-white transition hover:bg-brand-accent-hover">Browse homes</a>
+            <a href="/apartments" className="mt-5 inline-flex h-12 items-center rounded-xl bg-brand-accent px-6 font-semibold text-white transition hover:bg-brand-accent-hover">Browse homes</a>
           </div>
         ) : (
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

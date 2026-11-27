@@ -1,17 +1,10 @@
 import Link from 'next/link';
 
-import { Logo } from '../components/Logo';
-
 export default function NotFound() {
   return (
-    <main className="flex min-h-screen flex-col bg-brand-surface">
-      <header className="border-b border-brand-border bg-white">
-        <div className="mx-auto flex w-full max-w-container items-center px-4 py-4 sm:px-8">
-          <Logo />
-        </div>
-      </header>
+    <main className="flex min-h-[70vh] flex-col bg-brand-canvas">
       <div className="mx-auto flex w-full max-w-container flex-1 items-center px-4 py-16 sm:px-8">
-        <div className="w-full rounded-2xl border border-brand-border bg-white p-10 text-center shadow-sm">
+        <div className="w-full rounded-3xl border border-brand-border bg-white p-10 text-center shadow-sm">
           <p className="text-sm font-bold uppercase tracking-widest text-brand-teal">Page not found</p>
           <h1 className="mt-3 text-3xl font-extrabold text-brand-primary">This page does not exist.</h1>
           <p className="mt-3 text-brand-muted">

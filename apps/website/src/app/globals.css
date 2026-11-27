@@ -57,3 +57,14 @@ a[href]:hover img {
   .reveal { opacity: 1; transform: none; transition: none; }
   .animate-floaty { animation: none; }
 }
+
+/* Accessible focus + brand selection */
+::selection { background: rgba(232, 138, 53, 0.25); }
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #e88a35;
+  outline-offset: 2px;
+}

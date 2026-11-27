@@ -37,13 +37,13 @@ export function Hero() {
           <div className="mt-8">
             <HeroSearch />
           </div>
-          <div className="mt-8 flex flex-wrap gap-x-10 gap-y-4">
+          <div className="mt-8 flex flex-wrap items-center gap-x-10 gap-y-4 sm:gap-x-12">
             {[
               [stats ? String(stats.homes) : '-', stats?.homes === 1 ? 'Home listed' : 'Homes listed'],
               ['3', 'Governorates'],
               ['Free', 'To browse'],
             ].map(([n, l]) => (
-              <div key={l}>
+              <div key={l} className="border-l-2 border-brand-teal/40 pl-4">
                 <p className="text-3xl font-extrabold text-brand-primary">{n}</p>
                 <p className="text-sm text-brand-muted">{l}</p>
               </div>
@@ -54,7 +54,7 @@ export function Hero() {
         <div className="relative mx-auto flex aspect-[4/3] w-full max-w-xl items-center justify-center overflow-hidden rounded-[2.5rem] border border-brand-border bg-gradient-to-br from-white via-[#EEF5F6] to-[#DCEBEE] shadow-2xl lg:aspect-square">
           <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-brand-teal/25 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-brand-primary/15 blur-3xl" />
-          <img src="/logo-h.png" alt="SUKNA" className="relative w-[78%] animate-floaty object-contain" loading="eager" />
+          <img src="/logo-h.png" alt="SUKNA" className="relative w-[74%] animate-floaty object-contain drop-shadow-xl" loading="eager" />
         </div>
       </div>
     </section>

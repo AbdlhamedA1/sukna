@@ -23,12 +23,12 @@ export function HeroSearch() {
   }
 
   return (
-    <div className="w-full max-w-3xl rounded-2xl border border-brand-border bg-white p-4 shadow-sm sm:p-5">
+    <div className="w-full max-w-3xl rounded-3xl border border-brand-border/70 bg-white/95 p-4 shadow-xl shadow-brand-primary/5 backdrop-blur sm:p-5">
       <LocationCascade onChange={setSelection} />
       <button
         type="button"
         onClick={handleSearch}
-        className="mt-4 flex h-12 w-full items-center justify-center rounded-lg bg-brand-accent font-semibold text-white transition hover:bg-brand-accent-hover active:scale-[0.99] sm:w-auto sm:px-10"
+        className="mt-4 flex h-12 w-full items-center justify-center rounded-xl bg-brand-accent font-semibold text-white shadow-sm transition hover:bg-brand-accent-hover active:scale-[0.99] sm:w-auto sm:px-10"
       >
         Search housing
       </button>

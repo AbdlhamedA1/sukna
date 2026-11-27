@@ -9,7 +9,7 @@ const POINTS = [
 
 export function WhySukna() {
   return (
-    <section id="why" className="bg-brand-canvas py-16 sm:py-24">
+    <section id="why" className="bg-white py-16 sm:py-24">
       <div className="mx-auto w-full max-w-container px-4 sm:px-8">
         <Reveal className="max-w-2xl">
           <p className="text-sm font-bold uppercase tracking-widest text-brand-teal">Why SUKNA</p>

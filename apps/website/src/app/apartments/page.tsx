@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 
-import { AuthNav } from '../../components/layout/AuthNav';
 import { ApartmentCard } from '../../components/apartments/ApartmentCard';
 import {
   FilterPanel,
@@ -12,7 +11,6 @@ import {
 import type { LocationSelection } from '../../components/locations/LocationCascade';
 import { apiFetch } from '../../lib/api';
 import type { ApartmentListItem } from '../../types/apartments';
-import { Logo } from '../../components/Logo';
 
 interface ListResponse {
   data: {
@@ -69,18 +67,11 @@ export default function ApartmentsPage() {
   }, [filters, page]);
 
   return (
-    <main className="min-h-screen bg-brand-surface">
-      <header className="border-b border-brand-border bg-white">
-        <div className="mx-auto flex w-full max-w-container items-center justify-between px-4 py-4 sm:px-8">
-          <Logo />
-          <AuthNav />
-        </div>
-      </header>
-
+    <main className="min-h-screen bg-brand-canvas">
       <div className="mx-auto flex w-full max-w-container gap-8 px-4 py-8 sm:px-8">
         {/* Desktop sidebar */}
         <aside className="hidden w-72 shrink-0 lg:block">
-          <div className="rounded-2xl border border-brand-border bg-white p-5">
+          <div className="rounded-3xl border border-brand-border bg-white p-5 shadow-sm">
             <h2 className="mb-4 font-bold text-brand-primary">Filters</h2>
             <FilterPanel
               filters={filters}
@@ -100,7 +91,7 @@ export default function ApartmentsPage() {
             </h1>
             <select
               aria-label="Sort by"
-              className="h-11 rounded-lg border border-brand-border bg-white px-3 text-sm text-brand-ink"
+              className="h-11 cursor-pointer rounded-xl border border-brand-border bg-white px-3 text-sm font-semibold text-brand-primary shadow-sm outline-none transition focus:border-brand-accent"
               value={filters.sortBy}
               onChange={(e) => {
                 setFilters({ ...filters, sortBy: e.target.value });
@@ -118,7 +109,7 @@ export default function ApartmentsPage() {
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="aspect-[4/3] animate-pulse rounded-2xl bg-brand-primary-soft"
+                  className="aspect-[4/3] animate-pulse rounded-3xl bg-brand-primary-soft"
                 />
               ))}
             </div>
@@ -129,8 +120,12 @@ export default function ApartmentsPage() {
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border border-brand-border bg-white p-10 text-center">
-              <p className="font-semibold text-brand-ink">No homes match these filters yet.</p>
+            <div className="rounded-3xl border border-dashed border-brand-border bg-white p-12 text-center">
+              <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden fill="none" stroke="#3C8F86" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="mx-auto">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+              <p className="mt-4 font-semibold text-brand-ink">No homes match these filters yet.</p>
               <p className="mt-1 text-sm text-brand-muted">
                 Try widening the price range or picking another area.
               </p>
@@ -143,7 +138,7 @@ export default function ApartmentsPage() {
                 type="button"
                 disabled={page <= 1}
                 onClick={() => setPage(page - 1)}
-                className="h-11 rounded-lg border border-brand-border bg-white px-5 text-sm font-semibold text-brand-primary disabled:opacity-40"
+                className="h-11 cursor-pointer rounded-xl border border-brand-border bg-white px-5 text-sm font-semibold text-brand-primary shadow-sm transition hover:bg-brand-primary-soft disabled:opacity-40"
               >
                 Previous
               </button>
@@ -154,7 +149,7 @@ export default function ApartmentsPage() {
                 type="button"
                 disabled={page >= result.pagination.pages}
                 onClick={() => setPage(page + 1)}
-                className="h-11 rounded-lg border border-brand-border bg-white px-5 text-sm font-semibold text-brand-primary disabled:opacity-40"
+                className="h-11 cursor-pointer rounded-xl border border-brand-border bg-white px-5 text-sm font-semibold text-brand-primary shadow-sm transition hover:bg-brand-primary-soft disabled:opacity-40"
               >
                 Next
               </button>
