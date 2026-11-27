@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { LocationCascade } from '../locations/LocationCascade';
+import { LocationCascade, type LocationSelection } from '../locations/LocationCascade';
 
 export interface CatalogFilters {
   governorateId?: string;
@@ -19,13 +19,14 @@ export interface CatalogFilters {
 interface FilterPanelProps {
   filters: CatalogFilters;
   onChange: (next: CatalogFilters) => void;
+  initialLocation?: LocationSelection;
 }
 
 const inputClass =
   'h-11 w-full rounded-lg border border-brand-border bg-white px-3 text-sm text-brand-ink outline-none transition focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/30';
 
 /** Shared filter form used by the desktop sidebar and the mobile bottom sheet. */
-export function FilterPanel({ filters, onChange }: FilterPanelProps) {
+export function FilterPanel({ filters, onChange, initialLocation }: FilterPanelProps) {
   const set = (patch: Partial<CatalogFilters>) => onChange({ ...filters, ...patch });
 
   return (
@@ -33,6 +34,7 @@ export function FilterPanel({ filters, onChange }: FilterPanelProps) {
       <div>
         <p className="mb-2 text-sm font-semibold text-brand-ink">Location</p>
         <LocationCascade
+          initial={initialLocation}
           onChange={(sel) => set(sel)}
           className="grid grid-cols-1 gap-2 sm:grid-cols-1"
         />
@@ -45,6 +47,7 @@ export function FilterPanel({ filters, onChange }: FilterPanelProps) {
             type="number"
             min={0}
             placeholder="Min"
+            aria-label="Minimum monthly rent in EGP"
             className={inputClass}
             value={filters.minPrice ?? ''}
             onChange={(e) => set({ minPrice: e.target.value ? Number(e.target.value) : undefined })}
@@ -53,6 +56,7 @@ export function FilterPanel({ filters, onChange }: FilterPanelProps) {
             type="number"
             min={0}
             placeholder="Max"
+            aria-label="Maximum monthly rent in EGP"
             className={inputClass}
             value={filters.maxPrice ?? ''}
             onChange={(e) => set({ maxPrice: e.target.value ? Number(e.target.value) : undefined })}
@@ -63,6 +67,7 @@ export function FilterPanel({ filters, onChange }: FilterPanelProps) {
       <div>
         <p className="mb-2 text-sm font-semibold text-brand-ink">Rental type</p>
         <select
+          aria-label="Rental type"
           className={inputClass}
           value={filters.rentalType ?? ''}
           onChange={(e) => set({ rentalType: e.target.value || undefined })}
@@ -77,6 +82,7 @@ export function FilterPanel({ filters, onChange }: FilterPanelProps) {
       <div>
         <p className="mb-2 text-sm font-semibold text-brand-ink">Bedrooms</p>
         <select
+          aria-label="Bedrooms"
           className={inputClass}
           value={filters.bedrooms ?? ''}
           onChange={(e) => set({ bedrooms: e.target.value ? Number(e.target.value) : undefined })}
@@ -93,6 +99,7 @@ export function FilterPanel({ filters, onChange }: FilterPanelProps) {
       <div>
         <p className="mb-2 text-sm font-semibold text-brand-ink">Furnishing</p>
         <select
+          aria-label="Furnishing"
           className={inputClass}
           value={filters.furnishedStatus ?? ''}
           onChange={(e) => set({ furnishedStatus: e.target.value || undefined })}
@@ -116,7 +123,7 @@ export function FilterPanel({ filters, onChange }: FilterPanelProps) {
 }
 
 /** Mobile: floating filter button + bottom sheet wrapping FilterPanel. */
-export function MobileFilterSheet({ filters, onChange }: FilterPanelProps) {
+export function MobileFilterSheet({ filters, onChange, initialLocation }: FilterPanelProps) {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -136,7 +143,7 @@ export function MobileFilterSheet({ filters, onChange }: FilterPanelProps) {
           />
           <div className="absolute inset-x-0 bottom-0 max-h-[80vh] overflow-y-auto rounded-t-3xl bg-white p-5 pb-8">
             <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-brand-border" />
-            <FilterPanel filters={filters} onChange={onChange} />
+            <FilterPanel filters={filters} onChange={onChange} initialLocation={initialLocation} />
             <button
               type="button"
               onClick={() => setOpen(false)}

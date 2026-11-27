@@ -9,6 +9,7 @@ import {
   MobileFilterSheet,
   type CatalogFilters,
 } from '../../components/apartments/FilterPanel';
+import type { LocationSelection } from '../../components/locations/LocationCascade';
 import { apiFetch } from '../../lib/api';
 import type { ApartmentListItem } from '../../types/apartments';
 import { Logo } from '../../components/Logo';
@@ -22,9 +23,36 @@ interface ListResponse {
 
 export default function ApartmentsPage() {
   const [filters, setFilters] = useState<CatalogFilters>({ sortBy: 'newest' });
+  const [initialLocation, setInitialLocation] = useState<LocationSelection>({});
   const [page, setPage] = useState(1);
   const [result, setResult] = useState<ListResponse['data'] | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // The landing search and shared links carry the filters in the query string.
+  // Read them once on mount so the catalog opens already filtered.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const num = (key: string) => (params.get(key) ? Number(params.get(key)) : undefined);
+    const fromUrl: CatalogFilters = {
+      governorateId: params.get('governorateId') ?? undefined,
+      cityId: params.get('cityId') ?? undefined,
+      areaId: params.get('areaId') ?? undefined,
+      minPrice: num('minPrice'),
+      maxPrice: num('maxPrice'),
+      rentalType: params.get('rentalType') ?? undefined,
+      bedrooms: num('bedrooms'),
+      furnishedStatus: params.get('furnishedStatus') ?? undefined,
+      sortBy: params.get('sortBy') ?? 'newest',
+    };
+    if (Object.values(fromUrl).some((v) => v !== undefined && v !== '' && v !== 'newest')) {
+      setFilters(fromUrl);
+      setInitialLocation({
+        governorateId: fromUrl.governorateId,
+        cityId: fromUrl.cityId,
+        areaId: fromUrl.areaId,
+      });
+    }
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -56,6 +84,7 @@ export default function ApartmentsPage() {
             <h2 className="mb-4 font-bold text-brand-primary">Filters</h2>
             <FilterPanel
               filters={filters}
+              initialLocation={initialLocation}
               onChange={(next) => {
                 setFilters(next);
                 setPage(1);
@@ -136,6 +165,7 @@ export default function ApartmentsPage() {
 
       <MobileFilterSheet
         filters={filters}
+        initialLocation={initialLocation}
         onChange={(next) => {
           setFilters(next);
           setPage(1);

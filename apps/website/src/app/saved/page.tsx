@@ -12,7 +12,7 @@ import { Logo } from '../../components/Logo';
 export default function SavedPage() {
   const [items, setItems] = useState<ApartmentListItem[] | null>(null);
   const [signedOut, setSignedOut] = useState(false);
-  const { ids } = useFavorites();
+  const { ids, ready } = useFavorites();
 
   useEffect(() => {
     apiFetch<{ data: { apartments: ApartmentListItem[] } }>('/favorites')
@@ -20,7 +20,7 @@ export default function SavedPage() {
       .catch(() => setSignedOut(true));
   }, []);
 
-  const shown = items?.filter((a) => ids.has(a._id) || ids.size === 0) ?? null;
+  const shown = items && ready ? items.filter((a) => ids.has(a._id)) : null;
 
   return (
     <main className="min-h-screen bg-brand-surface pb-16">

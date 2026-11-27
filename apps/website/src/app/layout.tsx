@@ -9,13 +9,35 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 const cairo = Cairo({ subsets: ['arabic', 'latin'], variable: '--font-cairo', display: 'swap' });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://suknawebsite-production.up.railway.app';
+
+const siteTitle = 'SUKNA — سُكنا | Student Housing in Upper Egypt';
+const siteDescription =
+  'SUKNA is a verified student and residential housing discovery marketplace for Qena, Sohag, and Minya.';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: 'SUKNA — سُكنا | Student Housing in Upper Egypt',
+    default: siteTitle,
     template: '%s | SUKNA',
   },
-  description:
-    'SUKNA is a verified student and residential housing discovery marketplace for Qena, Sohag, and Minya.',
+  description: siteDescription,
+  openGraph: {
+    type: 'website',
+    siteName: 'SUKNA',
+    locale: 'en_EG',
+    url: siteUrl,
+    title: siteTitle,
+    description: siteDescription,
+    images: [{ url: '/logo-h.png', alt: 'SUKNA' }],
+  },
+  twitter: {
+    card: 'summary',
+    title: siteTitle,
+    description: siteDescription,
+    images: ['/logo-h.png'],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

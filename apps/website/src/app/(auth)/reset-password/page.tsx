@@ -8,6 +8,7 @@ import { FormField } from '../../../components/auth/FormField';
 import { OtpInput } from '../../../components/auth/OtpInput';
 import { SubmitButton } from '../../../components/auth/SubmitButton';
 import { apiFetch } from '../../../lib/api';
+import { whatsappLink } from '../../../lib/contact';
 
 type Step = 'code' | 'password';
 
@@ -63,6 +64,30 @@ function ResetPasswordForm() {
     }
   }
 
+  if (!email) {
+    return (
+      <AuthCard
+        title="Reset your password"
+        subtitle="Password reset by email is not available right now."
+      >
+        <p className="text-sm text-brand-muted">
+          Message us on WhatsApp and we will reset your account for you.
+        </p>
+        <a
+          href={whatsappLink('Hi SUKNA, I need help resetting my password.')}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-4 flex h-11 cursor-pointer items-center justify-center rounded-lg bg-[#25D366] font-semibold text-white transition hover:opacity-90"
+        >
+          Message us on WhatsApp
+        </a>
+        <a href="/login" className="mt-4 inline-block text-sm font-semibold text-brand-primary hover:underline">
+          Back to log in
+        </a>
+      </AuthCard>
+    );
+  }
+
   if (step === 'password') {
     return (
       <AuthCard title="Choose a new password" subtitle={`Resetting the password for ${email}.`}>
@@ -97,6 +122,18 @@ function ResetPasswordForm() {
         <OtpInput onChange={setCode} disabled={loading} />
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
         <SubmitButton loading={loading}>Continue</SubmitButton>
+        <p className="text-sm text-brand-muted">
+          No code? Email reset is not always available.{' '}
+          <a
+            href={whatsappLink('Hi SUKNA, I did not get a password reset code.')}
+            target="_blank"
+            rel="noreferrer"
+            className="font-semibold text-brand-primary underline"
+          >
+            Message us on WhatsApp
+          </a>
+          .
+        </p>
       </form>
     </AuthCard>
   );

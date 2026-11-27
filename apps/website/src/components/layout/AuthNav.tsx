@@ -3,15 +3,15 @@
 import { logoutAndGoHome, useSession } from '../../lib/session';
 
 const link =
-  'rounded-lg px-3 py-2 text-sm font-semibold text-brand-primary transition hover:bg-brand-primary-soft sm:px-4';
+  'rounded-lg px-2 py-2 text-sm font-semibold text-brand-primary transition hover:bg-brand-primary-soft sm:px-4';
 
 export function AuthNav() {
   const user = useSession();
   if (user === undefined) return <nav className="h-9 w-32" aria-hidden />;
   if (user) {
     return (
-      <nav className="flex items-center gap-2 sm:gap-3">
-      <a href="/packages" className={`${link} hidden md:inline-block`}>
+      <nav className="flex items-center gap-1 sm:gap-3">
+      <a href="/packages" className={`${link} hidden min-[360px]:inline-block`}>
         Packages
       </a>
         <a href="/saved" className={link}>
@@ -31,8 +31,8 @@ export function AuthNav() {
     );
   }
   return (
-    <nav className="flex items-center gap-2 sm:gap-3">
-      <a href="/packages" className={`${link} hidden md:inline-block`}>
+    <nav className="flex items-center gap-1 sm:gap-3">
+      <a href="/packages" className={`${link} hidden min-[360px]:inline-block`}>
         Packages
       </a>
       <a href="/login" className={link}>

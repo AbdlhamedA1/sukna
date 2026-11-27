@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { AreaInfo } from '../../../components/apartments/AreaInfo';
 import { FavoriteButton } from '../../../components/apartments/FavoriteButton';
 import { apiFetch } from '../../../lib/api';
+import { useSession } from '../../../lib/session';
 
 interface ApartmentDetail {
   _id: string;
@@ -52,6 +53,8 @@ export default function ApartmentDetailPage() {
   const [contact, setContact] = useState<ContactInfo | null>(null);
   const [contactError, setContactError] = useState('');
   const [showContact, setShowContact] = useState(false);
+  const sessionUser = useSession();
+  const signedIn = sessionUser === undefined ? null : Boolean(sessionUser);
   const [loading, setLoading] = useState(true);
   const [buildingImage, setBuildingImage] = useState('');
 
@@ -198,8 +201,8 @@ export default function ApartmentDetailPage() {
               </h1>
               <div className="mt-3 flex flex-wrap gap-2 text-sm">
                 {[
-                  `${apartment.bedrooms} bedrooms`,
-                  `${apartment.bathrooms} bathrooms`,
+                  `${apartment.bedrooms} ${apartment.bedrooms === 1 ? 'bedroom' : 'bedrooms'}`,
+                  `${apartment.bathrooms} ${apartment.bathrooms === 1 ? 'bathroom' : 'bathrooms'}`,
                   `Floor ${apartment.floor}`,
                   apartment.furnishedStatus.replace('_', ' '),
                   apartment.rentalType.replace('_', ' '),
@@ -259,7 +262,9 @@ export default function ApartmentDetailPage() {
               ) : (
                 <>
                   <p className="mt-1 text-sm text-brand-muted">
-                    Log in to see the landlord contact.
+                    {signedIn === false
+                      ? 'Log in to see the landlord contact.'
+                      : 'Reveal the owner name, phone number and WhatsApp.'}
                   </p>
                   <button
                     type="button"

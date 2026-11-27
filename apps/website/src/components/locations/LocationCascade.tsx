@@ -12,9 +12,16 @@ export interface LocationNode {
   children: LocationNode[];
 }
 
+export interface LocationSelection {
+  governorateId?: string;
+  cityId?: string;
+  areaId?: string;
+}
+
 interface LocationCascadeProps {
-  onChange: (selection: { governorateId?: string; cityId?: string; areaId?: string }) => void;
+  onChange: (selection: LocationSelection) => void;
   className?: string;
+  initial?: LocationSelection;
 }
 
 const selectClass =
@@ -25,11 +32,11 @@ const selectClass =
  * Each tier unlocks once its parent is chosen; changing a parent resets the
  * tiers below it.
  */
-export function LocationCascade({ onChange, className }: LocationCascadeProps) {
+export function LocationCascade({ onChange, className, initial }: LocationCascadeProps) {
   const [tree, setTree] = useState<LocationNode[]>([]);
-  const [governorateId, setGovernorateId] = useState('');
-  const [cityId, setCityId] = useState('');
-  const [areaId, setAreaId] = useState('');
+  const [governorateId, setGovernorateId] = useState(initial?.governorateId ?? '');
+  const [cityId, setCityId] = useState(initial?.cityId ?? '');
+  const [areaId, setAreaId] = useState(initial?.areaId ?? '');
 
   useEffect(() => {
     apiFetch<{ data: { tree: LocationNode[] } }>('/locations/tree')

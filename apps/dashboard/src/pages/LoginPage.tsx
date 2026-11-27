@@ -87,7 +87,7 @@ export function LoginPage() {
           <Title level={3} className="!text-brand-primary">Reset password</Title>
           {step === 'email' && (
             <Form layout="vertical" onFinish={onEmail} requiredMark={false} className="mt-4">
-              <Text type="secondary">We will email you a 6-digit code.</Text>
+              <Text type="secondary">Enter your admin email to get a 6-digit reset code. If email reset is unavailable, contact the SUKNA team and we will reset it for you.</Text>
               <Form.Item name="email" label="Email" className="mt-4" rules={[{ required: true, type: 'email' }]}>
                 <Input size="large" prefix={<MailOutlined />} />
               </Form.Item>

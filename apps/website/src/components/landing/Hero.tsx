@@ -39,7 +39,7 @@ export function Hero() {
           </div>
           <div className="mt-8 flex flex-wrap gap-x-10 gap-y-4">
             {[
-              [stats ? String(stats.homes) : '-', 'Homes listed'],
+              [stats ? String(stats.homes) : '-', stats?.homes === 1 ? 'Home listed' : 'Homes listed'],
               ['3', 'Governorates'],
               ['Free', 'To browse'],
             ].map(([n, l]) => (

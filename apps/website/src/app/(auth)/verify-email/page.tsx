@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 import { AuthCard } from '../../../components/auth/AuthCard';
 import { OtpInput } from '../../../components/auth/OtpInput';
@@ -16,6 +16,11 @@ function VerifyEmailForm() {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Email verification is optional. A direct visit has no account to verify.
+  useEffect(() => {
+    if (!email) router.replace('/login');
+  }, [email, router]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
