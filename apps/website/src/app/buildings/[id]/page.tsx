@@ -11,7 +11,7 @@ import { apiFetch } from '../../../lib/api';
 import type { ApartmentListItem } from '../../../types/apartments';
 import { Logo } from '../../../components/Logo';
 
-type Building = BuildingItem & { googleMapsUrl: string; additionalImages: string[] };
+type Building = BuildingItem & { googleMapsUrl: string; additionalImages: string[]; location?: { lat: number; lng: number } };
 
 export default function BuildingPage() {
   const { id } = useParams<{ id: string }>();
@@ -65,14 +65,23 @@ export default function BuildingPage() {
                 )}
               </section>
               <aside className="flex flex-col gap-4">
-                <a
-                  href={b.googleMapsUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex h-12 cursor-pointer items-center justify-center rounded-lg bg-brand-primary font-semibold text-white transition hover:opacity-90"
-                >
-                  Open in Google Maps
-                </a>
+                <div className="overflow-hidden rounded-2xl border border-brand-border bg-white shadow-sm">
+                  <iframe
+                    title={`Map of ${b.name}`}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(b.location ? `${b.location.lat},${b.location.lng}` : `${b.name} ${b.streetAddress}`)}&z=16&output=embed`}
+                    className="h-64 w-full border-0 sm:h-72"
+                  />
+                  <a
+                    href={b.googleMapsUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex h-12 cursor-pointer items-center justify-center bg-brand-primary font-semibold text-white transition hover:opacity-90"
+                  >
+                    Open in Google Maps
+                  </a>
+                </div>
                 <AreaInfo buildingId={b._id} />
               </aside>
             </div>
