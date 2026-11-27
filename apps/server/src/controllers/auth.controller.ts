@@ -96,6 +96,15 @@ export async function register(req: Request, res: Response, next: NextFunction) 
 
     const passwordHash = await bcrypt.hash(password, env.bcryptSaltRounds);
     // Public registration unconditionally provisions role: 'user' (FR-AUTH-10).
+    if (!env.emailVerificationRequired) {
+      await User.create({ fullName, email, passwordHash, role: 'user', isVerified: true });
+      res.status(201).json({
+        success: true,
+        message: 'Account created. You can log in now.',
+        data: { email, verified: true },
+      });
+      return;
+    }
     await User.create({ fullName, email, passwordHash, role: 'user' });
 
     await issueOtp(email, 'email_verification');
@@ -216,6 +225,13 @@ export async function me(req: Request, res: Response, next: NextFunction) {
 export async function forgotPassword(req: Request, res: Response, next: NextFunction) {
   try {
     const { email } = req.body;
+
+    if (!env.emailVerificationRequired) {
+      throw httpError(
+        503,
+        'Password reset by email is not available right now. Please contact SUKNA on WhatsApp and we will help you.',
+      );
+    }
 
     // Generic success response regardless of account existence (FR-AUTH-09).
     const user = await User.findOne({ email });

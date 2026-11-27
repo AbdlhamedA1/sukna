@@ -26,7 +26,7 @@ export default function RegisterPage() {
     }
     setLoading(true);
     try {
-      await apiFetch('/auth/register', {
+      const reg = await apiFetch<{ data?: { verified?: boolean } }>('/auth/register', {
         method: 'POST',
         body: JSON.stringify({
           fullName: form.get('fullName'),
@@ -35,6 +35,15 @@ export default function RegisterPage() {
           confirmPassword,
         }),
       });
+      if (reg.data?.verified) {
+        await apiFetch('/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({ email: form.get('email'), password }),
+        });
+        router.push('/');
+        router.refresh();
+        return;
+      }
       router.push(`/verify-email?email=${encodeURIComponent(String(form.get('email')))}`);
     } catch (e) {
       setError(e instanceof Error && !e.message.startsWith('API request failed') ? e.message : 'Registration failed. Please check your details and try again.');
@@ -46,7 +55,7 @@ export default function RegisterPage() {
   return (
     <AuthCard
       title="Create your account"
-      subtitle="A verification code will be sent to your email."
+      subtitle="Create a free account to save favorites and contact owners."
       footer={
         <>
           Already have an account?{' '}

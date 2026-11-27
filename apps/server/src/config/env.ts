@@ -25,6 +25,8 @@ export const env = {
   bcryptSaltRounds: toInt(required('BCRYPT_SALT_ROUNDS', '12'), 'BCRYPT_SALT_ROUNDS'),
   websiteUrl: required('WEBSITE_URL', 'http://localhost:3000'),
   dashboardUrl: required('DASHBOARD_URL', 'http://localhost:5173'),
+  // When false (default) new accounts are verified on creation and no email is sent.
+  emailVerificationRequired: process.env.EMAIL_VERIFICATION_REQUIRED === 'true',
   cookieDomain: process.env.COOKIE_DOMAIN,
   isProduction(): boolean {
     return this.nodeEnv === 'production';
