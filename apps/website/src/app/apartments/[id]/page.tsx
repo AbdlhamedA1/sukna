@@ -113,7 +113,8 @@ export default function ApartmentDetailPage() {
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start">
           {/* Left half: photos */}
-          <div className="overflow-hidden rounded-2xl border border-brand-border bg-white shadow-sm lg:sticky lg:top-20">
+          <div className="flex flex-col gap-4 lg:sticky lg:top-20">
+          <div className="overflow-hidden rounded-2xl border border-brand-border bg-white shadow-sm">
             <button
               type="button"
               onClick={() => setPreviewOpen(true)}
@@ -159,6 +160,18 @@ export default function ApartmentDetailPage() {
               </div>
             ) : null}
           </div>
+<div className="flex items-center gap-4 rounded-2xl border border-brand-border bg-white p-4 shadow-sm">
+              {buildingImage ? (
+                <img src={buildingImage} alt={apartment.buildingId.name} loading="lazy" decoding="async" className="h-24 w-32 shrink-0 rounded-xl object-cover sm:h-28 sm:w-40" />
+              ) : null}
+              <div className="min-w-0">
+                <p className="text-xs font-bold uppercase tracking-widest text-brand-teal">The building</p>
+                <h2 className="mt-1 truncate text-lg font-bold text-brand-primary">{apartment.buildingId.name}</h2>
+                <p className="text-sm text-brand-muted">{apartment.buildingId.streetAddress}</p>
+              </div>
+            </div>
+            <AreaInfo buildingId={apartment.buildingId._id} />
+            </div>
 
           {/* Right half: details, map, contact */}
           <div className="flex flex-col gap-4">
@@ -263,20 +276,6 @@ export default function ApartmentDetailPage() {
           </div>
         </div>
 
-        {/* Building info: a small section under the apartment */}
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          <div className="flex items-center gap-4 rounded-2xl border border-brand-border bg-white p-4 shadow-sm">
-            {buildingImage ? (
-              <img src={buildingImage} alt={apartment.buildingId.name} loading="lazy" decoding="async" className="h-24 w-32 shrink-0 rounded-xl object-cover sm:h-28 sm:w-40" />
-            ) : null}
-            <div className="min-w-0">
-              <p className="text-xs font-bold uppercase tracking-widest text-brand-teal">The building</p>
-              <h2 className="mt-1 truncate text-lg font-bold text-brand-primary">{apartment.buildingId.name}</h2>
-              <p className="text-sm text-brand-muted">{apartment.buildingId.streetAddress}</p>
-            </div>
-          </div>
-          <AreaInfo buildingId={apartment.buildingId._id} />
-        </div>
       </div>
     </main>
   );
