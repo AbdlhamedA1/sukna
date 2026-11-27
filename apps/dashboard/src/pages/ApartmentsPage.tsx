@@ -72,7 +72,7 @@ export function ApartmentsPage() {
         ownerName: String(values.ownerName),
         ownerPhone: String(values.ownerPhone),
       }).unwrap();
-      message.success('Apartment created (pending publication).');
+      message.success('Apartment created and live on the website.');
       setModalOpen(false);
       form.resetFields();
     } catch {

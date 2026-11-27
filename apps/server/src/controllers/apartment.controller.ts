@@ -191,7 +191,8 @@ export async function createApartment(req: Request, res: Response, next: NextFun
       return next(httpError(400, 'Building is archived; it cannot accept new apartments.'));
     }
 
-    const apartment = await Apartment.create(req.body);
+    // Admin-created listings go live immediately; Unpublish still takes them down.
+    const apartment = await Apartment.create({ ...req.body, listingStatus: 'published' });
     res.status(201).json({ success: true, data: { apartment } });
   } catch (err) {
     next(err);
