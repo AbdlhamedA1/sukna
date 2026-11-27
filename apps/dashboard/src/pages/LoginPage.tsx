@@ -147,8 +147,9 @@ export function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-brand-canvas px-4">
       <Card className="w-full max-w-md border-brand-border">
+        <img src="/logo-h.png" alt="SUKNA" className="mb-3 h-14 w-auto" />
         <Title level={3} className="!text-brand-primary">
-          SUKNA Dashboard
+          Dashboard
         </Title>
         <Text type="secondary">Administrator sign in.</Text>
         <Form<LoginFormValues> layout="vertical" onFinish={onFinish} className="mt-6" requiredMark={false}>
