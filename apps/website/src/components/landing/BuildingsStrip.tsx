@@ -9,9 +9,18 @@ import { Reveal } from './Reveal';
 export function BuildingsStrip() {
   const [items, setItems] = useState<BuildingItem[] | null>(null);
   useEffect(() => {
-    apiFetch<{ data: { buildings: BuildingItem[] } }>('/buildings?limit=6')
-      .then((r) => setItems(r.data.buildings))
-      .catch(() => setItems([]));
+    const load = () =>
+  apiFetch<{ data: { buildings: BuildingItem[] } }>('/buildings?limit=6')
+        .then((r) => setItems(r.data.buildings))
+        .catch(() => setItems([]));
+    load();
+    const onVis = () => document.visibilityState === 'visible' && load();
+    document.addEventListener('visibilitychange', onVis);
+    const t = setInterval(load, 30000);
+    return () => {
+      document.removeEventListener('visibilitychange', onVis);
+      clearInterval(t);
+    };
   }, []);
   if (items && items.length === 0) return null;
   return (

@@ -15,9 +15,18 @@ export function FeaturedHomes() {
   const [items, setItems] = useState<ApartmentListItem[] | null>(null);
 
   useEffect(() => {
-    apiFetch<ListResponse>('/apartments?limit=6&sortBy=newest')
-      .then((res) => setItems(res.data.apartments))
-      .catch(() => setItems([]));
+    const load = () =>
+  apiFetch<ListResponse>('/apartments?limit=6&sortBy=newest')
+        .then((res) => setItems(res.data.apartments))
+        .catch(() => setItems([]));
+    load();
+    const onVis = () => document.visibilityState === 'visible' && load();
+    document.addEventListener('visibilitychange', onVis);
+    const t = setInterval(load, 30000);
+    return () => {
+      document.removeEventListener('visibilitychange', onVis);
+      clearInterval(t);
+    };
   }, []);
 
   return (
