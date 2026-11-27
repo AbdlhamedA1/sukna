@@ -3,10 +3,13 @@ import { Router } from 'express';
 import * as ctrl from '../controllers/monetization.controller.js';
 import { requireAdmin, requireAuth } from '../middleware/auth.js';
 import { csrfHeaderGuard } from '../middleware/csrf.js';
+import { publicOrderLimiter } from '../middleware/rateLimit.js';
 import { validateBody } from '../middleware/validate.js';
 import {
+  assignApartmentSchema,
   createOrderSchema,
   createPackageSchema,
+  publicOrderSchema,
   recordPaymentSchema,
   updatePackageSchema,
 } from '../validators/monetization.validators.js';
@@ -33,6 +36,21 @@ monetizationRouter.put(
 );
 
 monetizationRouter.get('/orders', requireAuth, requireAdmin, ctrl.listOrders);
+monetizationRouter.post(
+  '/orders/public',
+  publicOrderLimiter,
+  csrfHeaderGuard,
+  validateBody(publicOrderSchema),
+  ctrl.createPublicOrder,
+);
+monetizationRouter.patch(
+  '/orders/:orderId/assign',
+  requireAuth,
+  requireAdmin,
+  csrfHeaderGuard,
+  validateBody(assignApartmentSchema),
+  ctrl.assignOrderApartment,
+);
 monetizationRouter.post(
   '/orders',
   requireAuth,

@@ -15,3 +15,16 @@ export const authRateLimiter = rateLimit({
     statusCode: 429,
   },
 });
+
+/** Unauthenticated website order requests: stricter than auth traffic. */
+export const publicOrderLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Too many attempts. Please try again later.',
+    statusCode: 429,
+  },
+});

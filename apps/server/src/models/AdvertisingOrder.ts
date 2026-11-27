@@ -13,7 +13,7 @@ export interface IPackageSnapshot {
 }
 
 export interface IAdvertisingOrder extends Document {
-  apartmentId: Types.ObjectId;
+  apartmentId: Types.ObjectId | null;
   packageId: Types.ObjectId;
   packageSnapshot: IPackageSnapshot;
   orderStatus: OrderStatus;
@@ -21,6 +21,9 @@ export interface IAdvertisingOrder extends Document {
   startDate: Date | null;
   endDate: Date | null;
   adminNotes: string;
+  ownerName: string;
+  ownerPhone: string;
+  propertyNote: string;
   createdAt: Date;
 }
 
@@ -37,7 +40,9 @@ const packageSnapshotSchema = new Schema<IPackageSnapshot>(
 
 const advertisingOrderSchema = new Schema<IAdvertisingOrder>(
   {
-    apartmentId: { type: Schema.Types.ObjectId, ref: 'Apartment', required: true },
+    // Optional: website order requests arrive before the property is identified;
+    // the admin assigns the apartment when converting the request.
+    apartmentId: { type: Schema.Types.ObjectId, ref: 'Apartment', default: null },
     packageId: { type: Schema.Types.ObjectId, ref: 'AdvertisingPackage', required: true },
     packageSnapshot: { type: packageSnapshotSchema, required: true },
     orderStatus: {
@@ -55,6 +60,9 @@ const advertisingOrderSchema = new Schema<IAdvertisingOrder>(
     startDate: { type: Date, default: null },
     endDate: { type: Date, default: null },
     adminNotes: { type: String, default: '', maxlength: 500 },
+    ownerName: { type: String, trim: true, maxlength: 100, default: '' },
+    ownerPhone: { type: String, trim: true, maxlength: 30, default: '' },
+    propertyNote: { type: String, trim: true, maxlength: 200, default: '' },
   },
   { timestamps: { createdAt: true, updatedAt: true } },
 );

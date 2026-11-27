@@ -123,6 +123,60 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
   }
 }
 
+/** Public website order request: no account needed, admin assigns the property later. */
+export async function createPublicOrder(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { packageId, ownerName, ownerPhone, propertyNote } = req.body;
+    const pkg = await AdvertisingPackage.findById(packageId);
+    if (!pkg) throw httpError(404, 'Package not found.');
+    if (!pkg.isActive) throw httpError(400, 'This package is not available for new orders.');
+
+    const order = await AdvertisingOrder.create({
+      packageId,
+      packageSnapshot: {
+        nameAr: pkg.nameAr,
+        nameEn: pkg.nameEn,
+        price: pkg.price,
+        durationDays: pkg.durationDays,
+        benefits: [...pkg.benefits],
+      },
+      orderStatus: 'pending',
+      paymentStatus: 'unpaid',
+      ownerName,
+      ownerPhone,
+      propertyNote,
+    });
+    res.status(201).json({
+      success: true,
+      message: 'Order received. We will contact you on WhatsApp.',
+      data: { orderId: order._id },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/** Admin assigns the property to a pending website order before settling it. */
+export async function assignOrderApartment(req: Request, res: Response, next: NextFunction) {
+  try {
+    const order = await AdvertisingOrder.findById(req.params.orderId);
+    if (!order) throw httpError(404, 'Order not found.');
+    if (order.orderStatus !== 'pending') {
+      throw httpError(409, 'Only a pending order can be assigned a property.');
+    }
+    const apartment = await Apartment.findOne({ _id: req.body.apartmentId, isDeleted: false });
+    if (!apartment) throw httpError(404, 'Apartment not found.');
+    order.apartmentId = apartment._id as typeof order.apartmentId;
+    await order.save();
+    await audit(req, 'PROPERTY_UPDATED', 'AdvertisingOrder', order._id, {
+      assignedApartmentId: String(apartment._id),
+    });
+    res.json({ success: true, data: { order } });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function listOrders(_req: Request, res: Response, next: NextFunction) {
   try {
     await expireOverdueOrders();
@@ -176,6 +230,9 @@ export async function recordPayment(req: Request, res: Response, next: NextFunct
     if (!order) throw httpError(404, 'Order not found.');
     if (order.orderStatus === 'cancelled') throw httpError(409, 'Order is cancelled.');
     if (order.paymentStatus === 'paid') throw httpError(409, 'Order is already paid.');
+    if (!order.apartmentId) {
+      throw httpError(409, 'Assign a property to this order before settling it.');
+    }
 
     const { amountPaid, paymentMethod, externalTransactionRef, paidAt, notes } = req.body;
     if (amountPaid !== order.packageSnapshot.price) {

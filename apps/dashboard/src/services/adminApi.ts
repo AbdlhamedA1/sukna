@@ -34,7 +34,10 @@ export interface PaymentItem {
 
 export interface OrderItem {
   _id: string;
-  apartmentId: { _id: string; title: string } | string;
+  apartmentId: { _id: string; title: string } | string | null;
+  ownerName?: string;
+  ownerPhone?: string;
+  propertyNote?: string;
   packageSnapshot: { nameEn: string; price: number; durationDays: number };
   orderStatus: 'pending' | 'active' | 'expired' | 'cancelled';
   paymentStatus: string;
@@ -109,6 +112,14 @@ export const adminApi = apiSlice.injectEndpoints({
       query: (body) => ({ url: '/monetization/orders', method: 'POST', body }),
       invalidatesTags: ['Order'],
     }),
+    assignOrderApartment: b.mutation<void, { id: string; apartmentId: string }>({
+      query: ({ id, apartmentId }) => ({
+        url: `/monetization/orders/${id}/assign`,
+        method: 'PATCH',
+        body: { apartmentId },
+      }),
+      invalidatesTags: ['Order'],
+    }),
     cancelOrder: b.mutation<void, string>({
       query: (id) => ({ url: `/monetization/orders/${id}/cancel`, method: 'PATCH' }),
       invalidatesTags: ['Order'],
@@ -167,6 +178,7 @@ export const {
   useSavePackageMutation,
   useGetOrdersQuery,
   useCreateOrderMutation,
+  useAssignOrderApartmentMutation,
   useCancelOrderMutation,
   useSettleOrderMutation,
   useGetLandmarksQuery,

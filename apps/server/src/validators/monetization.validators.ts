@@ -32,6 +32,20 @@ export const createOrderSchema = z
   })
   .strict();
 
+export const publicOrderSchema = z
+  .object({
+    packageId: objectId,
+    ownerName: z.string().trim().min(2).max(100),
+    ownerPhone: z
+      .string()
+      .trim()
+      .regex(/^[+\d][\d\s-]{7,19}$/, 'Invalid phone number.'),
+    propertyNote: z.string().trim().max(200).optional().default(''),
+  })
+  .strict();
+
+export const assignApartmentSchema = z.object({ apartmentId: objectId }).strict();
+
 export const recordPaymentSchema = z
   .object({
     amountPaid: z.number().min(0),

@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useGetAdminApartmentsQuery } from '../services/apartmentsApi';
 import {
   errMsg,
+  useAssignOrderApartmentMutation,
   useCancelOrderMutation,
   useCreateOrderMutation,
   useGetOrdersQuery,
@@ -24,9 +25,12 @@ export function OrdersPage() {
   const { data: apartments = [] } = useGetAdminApartmentsQuery();
   const [createOrder, { isLoading: creating }] = useCreateOrderMutation();
   const [cancelOrder] = useCancelOrderMutation();
+  const [assignApartment, { isLoading: assigning }] = useAssignOrderApartmentMutation();
   const [settle, { isLoading: settling }] = useSettleOrderMutation();
   const [newOpen, setNewOpen] = useState(false);
   const [paying, setPaying] = useState<OrderItem | null>(null);
+  const [assigningOrder, setAssigningOrder] = useState<OrderItem | null>(null);
+  const [assignForm] = Form.useForm();
   const [newForm] = Form.useForm();
   const [payForm] = Form.useForm();
 
@@ -38,6 +42,17 @@ export function OrdersPage() {
       newForm.resetFields();
     } catch (e) {
       message.error(errMsg(e, 'Could not create the order.'));
+    }
+  }
+
+  async function onAssign(v: { apartmentId: string }) {
+    if (!assigningOrder) return;
+    try {
+      await assignApartment({ id: assigningOrder._id, apartmentId: v.apartmentId }).unwrap();
+      message.success('Property assigned. You can settle the order now.');
+      setAssigningOrder(null);
+    } catch (e) {
+      message.error(errMsg(e, 'Could not assign the property.'));
     }
   }
 
@@ -71,7 +86,23 @@ export function OrdersPage() {
         columns={[
           {
             title: 'Apartment',
-            render: (_, o: OrderItem) => (typeof o.apartmentId === 'string' ? o.apartmentId : o.apartmentId?.title),
+            render: (_, o: OrderItem) =>
+              typeof o.apartmentId === 'string'
+                ? o.apartmentId
+                : (o.apartmentId?.title ?? <Tag color="orange">Not assigned</Tag>),
+          },
+          {
+            title: 'Owner',
+            render: (_, o: OrderItem) =>
+              o.ownerName ? (
+                <span>
+                  {o.ownerName}
+                  {o.ownerPhone ? <span className="text-brand-muted"> · {o.ownerPhone}</span> : null}
+                  {o.propertyNote ? <div className="text-xs text-brand-muted">{o.propertyNote}</div> : null}
+                </span>
+              ) : (
+                '-'
+              ),
           },
           { title: 'Package', render: (_, o: OrderItem) => o.packageSnapshot.nameEn },
           { title: 'Price (EGP)', render: (_, o: OrderItem) => o.packageSnapshot.price },
@@ -83,15 +114,21 @@ export function OrdersPage() {
             render: (_, o: OrderItem) =>
               o.orderStatus === 'pending' ? (
                 <div className="flex gap-2">
-                  <Button
-                    type="primary"
-                    onClick={() => {
-                      setPaying(o);
-                      payForm.setFieldsValue({ amountPaid: o.packageSnapshot.price, paymentMethod: 'instapay' });
-                    }}
-                  >
-                    Settle
-                  </Button>
+                  {o.apartmentId ? (
+                    <Button
+                      type="primary"
+                      onClick={() => {
+                        setPaying(o);
+                        payForm.setFieldsValue({ amountPaid: o.packageSnapshot.price, paymentMethod: 'instapay' });
+                      }}
+                    >
+                      Settle
+                    </Button>
+                  ) : (
+                    <Button type="primary" onClick={() => setAssigningOrder(o)}>
+                      Assign property
+                    </Button>
+                  )}
                   <Popconfirm title="Cancel this order?" onConfirm={() => cancelOrder(o._id)}>
                     <Button danger>Cancel</Button>
                   </Popconfirm>
@@ -117,6 +154,30 @@ export function OrdersPage() {
           </Form.Item>
           <Form.Item name="packageId" label="Package" rules={[{ required: true }]}>
             <Select options={packages.filter((p) => p.isActive).map((p) => ({ value: p._id, label: `${p.nameEn} - ${p.price} EGP / ${p.durationDays} days` }))} />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal
+        title="Assign property"
+        open={!!assigningOrder}
+        onCancel={() => setAssigningOrder(null)}
+        onOk={() => assignForm.submit()}
+        confirmLoading={assigning}
+        okText="Assign"
+        destroyOnClose
+      >
+        <p className="mb-3 text-sm text-brand-muted">
+          {assigningOrder?.ownerName ? `${assigningOrder.ownerName} asked for ${assigningOrder.packageSnapshot.nameEn}. ` : ''}
+          Pick the apartment this order belongs to, then settle it when the payment arrives.
+        </p>
+        <Form form={assignForm} layout="vertical" onFinish={onAssign} requiredMark={false}>
+          <Form.Item name="apartmentId" label="Apartment" rules={[{ required: true }]}>
+            <Select
+              showSearch
+              optionFilterProp="label"
+              options={apartments.filter((a) => a.listingStatus === 'published').map((a) => ({ value: a._id, label: a.title }))}
+            />
           </Form.Item>
         </Form>
       </Modal>
