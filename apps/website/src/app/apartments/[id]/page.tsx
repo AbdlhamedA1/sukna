@@ -37,7 +37,9 @@ interface ContactInfo {
 
 /** Prefer exact coordinates from the Google Maps link (@lat,lng or ?q=lat,lng); fall back to the address. */
 function mapEmbedQuery(url: string, fallback: string): string {
-  const m = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/) ?? url.match(/[?&](?:q|query|ll)=(-?\d+\.\d+)(?:,|%2C)(-?\d+\.\d+)/);
+  const m =
+    url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/) ??
+    url.match(/[?&](?:q|query|ll)=(-?\d+\.\d+)(?:,|%2C)(-?\d+\.\d+)/);
   return m ? `${m[1]},${m[2]}` : fallback;
 }
 
@@ -63,7 +65,9 @@ export default function ApartmentDetailPage() {
   useEffect(() => {
     const id = apartment?.buildingId._id;
     if (!id) return;
-    apiFetch<{ data: { building?: { mainImage?: string }; mainImage?: string } }>(`/buildings/${id}`)
+    apiFetch<{ data: { building?: { mainImage?: string }; mainImage?: string } }>(
+      `/buildings/${id}`,
+    )
       .then((r) => setBuildingImage(r.data.building?.mainImage ?? r.data.mainImage ?? ''))
       .catch(() => setBuildingImage(''));
   }, [apartment?.buildingId._id]);
@@ -111,10 +115,9 @@ export default function ApartmentDetailPage() {
           &larr; All homes
         </button>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:items-start">
           {/* Left half: photos */}
-          <div className="flex flex-col gap-4 lg:sticky lg:top-20">
-          <div className="overflow-hidden rounded-2xl border border-brand-border bg-white shadow-sm">
+          <div className="overflow-hidden lg:col-start-1 lg:row-start-1 rounded-2xl border border-brand-border bg-white shadow-sm">
             <button
               type="button"
               onClick={() => setPreviewOpen(true)}
@@ -154,27 +157,21 @@ export default function ApartmentDetailPage() {
                       i === activeImage ? 'border-brand-accent' : 'border-transparent'
                     }`}
                   >
-                    <img src={src} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                    <img
+                      src={src}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-cover"
+                    />
                   </button>
                 ))}
               </div>
             ) : null}
           </div>
-<div className="flex items-center gap-4 rounded-2xl border border-brand-border bg-white p-4 shadow-sm">
-              {buildingImage ? (
-                <img src={buildingImage} alt={apartment.buildingId.name} loading="lazy" decoding="async" className="h-24 w-32 shrink-0 rounded-xl object-cover sm:h-28 sm:w-40" />
-              ) : null}
-              <div className="min-w-0">
-                <p className="text-xs font-bold uppercase tracking-widest text-brand-teal">The building</p>
-                <h2 className="mt-1 truncate text-lg font-bold text-brand-primary">{apartment.buildingId.name}</h2>
-                <p className="text-sm text-brand-muted">{apartment.buildingId.streetAddress}</p>
-              </div>
-            </div>
-            <AreaInfo buildingId={apartment.buildingId._id} />
-            </div>
 
           {/* Right half: details, map, contact */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 lg:col-start-2 lg:row-span-2 lg:row-start-1">
             <section className="rounded-2xl border border-brand-border bg-white p-5 shadow-sm sm:p-6">
               <div className="flex items-start justify-between gap-3">
                 <p className="text-2xl font-bold text-brand-accent">
@@ -190,10 +187,15 @@ export default function ApartmentDetailPage() {
                   >
                     Share
                   </a>
-                  <FavoriteButton apartmentId={apartment._id} className="border border-brand-border" />
+                  <FavoriteButton
+                    apartmentId={apartment._id}
+                    className="border border-brand-border"
+                  />
                 </div>
               </div>
-              <h1 className="mt-1 text-xl font-bold text-brand-primary sm:text-2xl">{apartment.title}</h1>
+              <h1 className="mt-1 text-xl font-bold text-brand-primary sm:text-2xl">
+                {apartment.title}
+              </h1>
               <div className="mt-3 flex flex-wrap gap-2 text-sm">
                 {[
                   `${apartment.bedrooms} bedrooms`,
@@ -202,12 +204,17 @@ export default function ApartmentDetailPage() {
                   apartment.furnishedStatus.replace('_', ' '),
                   apartment.rentalType.replace('_', ' '),
                 ].map((t) => (
-                  <span key={t} className="rounded-full bg-brand-primary-soft px-3 py-1 font-medium capitalize text-brand-primary">
+                  <span
+                    key={t}
+                    className="rounded-full bg-brand-primary-soft px-3 py-1 font-medium capitalize text-brand-primary"
+                  >
                     {t}
                   </span>
                 ))}
               </div>
-              <p className="mt-5 whitespace-pre-line leading-relaxed text-brand-ink">{apartment.description}</p>
+              <p className="mt-5 whitespace-pre-line leading-relaxed text-brand-ink">
+                {apartment.description}
+              </p>
             </section>
 
             <div className="overflow-hidden rounded-2xl border border-brand-border bg-white shadow-sm">
@@ -217,7 +224,7 @@ export default function ApartmentDetailPage() {
               </div>
               <iframe
                 title={`Map of ${apartment.title}`}
-                loading="lazy"
+                loading="eager"
                 referrerPolicy="no-referrer-when-downgrade"
                 src={`https://maps.google.com/maps?q=${encodeURIComponent(apartment.buildingId.location ? `${apartment.buildingId.location.lat},${apartment.buildingId.location.lng}` : mapEmbedQuery(apartment.buildingId.googleMapsUrl, `${apartment.buildingId.name} ${apartment.buildingId.streetAddress}`))}&z=16&output=embed`}
                 className="h-64 w-full border-0 sm:h-72"
@@ -251,7 +258,9 @@ export default function ApartmentDetailPage() {
                 </div>
               ) : (
                 <>
-                  <p className="mt-1 text-sm text-brand-muted">Log in to see the landlord contact.</p>
+                  <p className="mt-1 text-sm text-brand-muted">
+                    Log in to see the landlord contact.
+                  </p>
                   <button
                     type="button"
                     onClick={() => {
@@ -274,8 +283,30 @@ export default function ApartmentDetailPage() {
               )}
             </div>
           </div>
+          <div className="flex flex-col gap-4 lg:col-start-1 lg:row-start-2">
+            <div className="flex items-center gap-4 rounded-2xl border border-brand-border bg-white p-4 shadow-sm">
+              {buildingImage ? (
+                <img
+                  src={buildingImage}
+                  alt={apartment.buildingId.name}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-24 w-32 shrink-0 rounded-xl object-cover sm:h-28 sm:w-40"
+                />
+              ) : null}
+              <div className="min-w-0">
+                <p className="text-xs font-bold uppercase tracking-widest text-brand-teal">
+                  The building
+                </p>
+                <h2 className="mt-1 truncate text-lg font-bold text-brand-primary">
+                  {apartment.buildingId.name}
+                </h2>
+                <p className="text-sm text-brand-muted">{apartment.buildingId.streetAddress}</p>
+              </div>
+            </div>
+            <AreaInfo buildingId={apartment.buildingId._id} />
+          </div>
         </div>
-
       </div>
     </main>
   );
