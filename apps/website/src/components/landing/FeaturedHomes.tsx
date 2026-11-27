@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { apiFetch } from '../../lib/api';
 import type { ApartmentListItem } from '../../types/apartments';
 import { ApartmentCard } from '../apartments/ApartmentCard';
+import { Reveal } from './Reveal';
 
 interface ListResponse {
   data: { apartments: ApartmentListItem[]; pagination: { total: number } };
@@ -20,30 +21,29 @@ export function FeaturedHomes() {
   }, []);
 
   return (
-    <section id="homes" className="bg-white py-16 sm:py-20">
+    <section id="homes" className="bg-white py-16 sm:py-24">
       <div className="mx-auto w-full max-w-container px-4 sm:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+        <Reveal className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-brand-primary sm:text-3xl">Latest homes</h2>
-            <p className="mt-2 text-brand-muted">Fresh listings from buildings we have verified.</p>
+            <p className="text-sm font-bold uppercase tracking-widest text-brand-teal">Just added</p>
+            <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-brand-primary sm:text-4xl">Latest homes</h2>
           </div>
-          <a
-            href="/apartments"
-            className="rounded-lg border border-brand-border px-4 py-2 text-sm font-semibold text-brand-primary transition hover:bg-brand-primary-soft"
-          >
-            Browse all homes
+          <a href="/apartments" className="rounded-full border border-brand-border bg-white px-5 py-2 text-sm font-semibold text-brand-primary shadow-sm transition hover:shadow-md">
+            Browse all homes &rarr;
           </a>
-        </div>
+        </Reveal>
 
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {items === null &&
             [0, 1, 2].map((i) => (
               <div key={i} className="aspect-[4/3] animate-pulse rounded-2xl bg-brand-surface" />
             ))}
-          {items?.map((a) => <ApartmentCard key={a._id} apartment={a} />)}
+          {items?.map((a, i) => (
+            <Reveal key={a._id} delay={i * 60}><ApartmentCard apartment={a} /></Reveal>
+          ))}
         </div>
         {items?.length === 0 && (
-          <p className="mt-8 text-center text-brand-muted">New listings are on their way.</p>
+          <p className="mt-8 text-center text-brand-muted">New homes are added here as soon as they are published.</p>
         )}
       </div>
     </section>

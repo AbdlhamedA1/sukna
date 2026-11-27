@@ -49,3 +49,11 @@ a[href] img {
 a[href]:hover img {
   filter: brightness(1.04);
 }
+
+/* Scroll reveal (landing). Disabled for users who prefer reduced motion. */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 600ms ease, transform 600ms ease; }
+.reveal.is-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .animate-floaty { animation: none; }
+}

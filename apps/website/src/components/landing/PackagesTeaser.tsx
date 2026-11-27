@@ -24,11 +24,11 @@ export function PackagesTeaser() {
   if (pkgs && pkgs.length === 0) return null;
 
   return (
-    <section id="packages" className="bg-white py-16 sm:py-20">
+    <section id="packages" className="bg-white py-16 sm:py-24">
       <div className="mx-auto w-full max-w-container px-4 sm:px-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-brand-primary sm:text-3xl">Advertise your apartment</h2>
+            <h2 className="text-3xl font-extrabold tracking-tight text-brand-primary sm:text-4xl">Advertise your apartment</h2>
             <p className="mt-2 text-brand-muted">Featured listings rank higher and carry a Featured badge.</p>
           </div>
           <a href="/packages" className="rounded-lg border border-brand-border px-4 py-2 text-sm font-semibold text-brand-primary transition hover:bg-brand-primary-soft">
@@ -38,7 +38,7 @@ export function PackagesTeaser() {
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {pkgs === null && [0, 1, 2].map((i) => <div key={i} className="h-60 animate-pulse rounded-2xl bg-brand-primary-soft" />)}
           {pkgs?.slice(0, 3).map((p) => (
-            <div key={p._id} className={`flex flex-col rounded-2xl border bg-white p-6 transition hover:-translate-y-1 hover:shadow-lg ${p.isFeatured ? 'border-brand-accent ring-2 ring-brand-accent/30' : 'border-brand-border'}`}>
+            <div key={p._id} className={`flex flex-col rounded-3xl border bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:shadow-lg ${p.isFeatured ? 'border-brand-accent ring-2 ring-brand-accent/30' : 'border-brand-border'}`}>
               {p.isFeatured && <span className="mb-2 w-fit rounded-full bg-amber-400 px-3 py-1 text-xs font-bold text-brand-primary">Most popular</span>}
               <h3 className="text-lg font-bold text-brand-primary">{p.nameEn}</h3>
               <p className="mt-2 text-2xl font-bold text-brand-accent">
