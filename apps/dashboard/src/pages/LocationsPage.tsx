@@ -41,18 +41,25 @@ export function LocationsPage() {
   const [form] = Form.useForm();
   const watchType = Form.useWatch('type', form) as LocationItem['type'] | undefined;
 
-  const treeData = useMemo(() => {
+  type Row = LocationItem & { key: string; depth: number; childCount: number };
+  const rows = useMemo(() => {
     const byParent = new Map<string, LocationItem[]>();
     for (const loc of locations) {
       const key = loc.parentId ?? 'root';
       byParent.set(key, [...(byParent.get(key) ?? []), loc]);
     }
-    const build = (parentKey: string): (LocationItem & { children?: unknown[] })[] =>
-      (byParent.get(parentKey) ?? []).map((loc) => {
-        const children = build(loc._id);
-        return { ...loc, key: loc._id, ...(children.length ? { children } : {}) };
-      });
-    return build('root');
+    const out: Row[] = [];
+    const walk = (parentKey: string, depth: number) => {
+      const list = [...(byParent.get(parentKey) ?? [])].sort(
+        (x, y) => (x.displayOrder ?? 0) - (y.displayOrder ?? 0),
+      );
+      for (const loc of list) {
+        out.push({ ...loc, key: loc._id, depth, childCount: byParent.get(loc._id)?.length ?? 0 });
+        walk(loc._id, depth + 1);
+      }
+    };
+    walk('root', 0);
+    return out;
   }, [locations]);
 
   const parentOptions = useMemo(() => {
@@ -101,38 +108,93 @@ export function LocationsPage() {
         </Button>
       </div>
 
-      <Table
-        loading={isLoading}
-        dataSource={treeData}
-        pagination={false}
-        expandable={{ defaultExpandAllRows: true }}
-        columns={[
-          { title: 'Name (EN)', dataIndex: 'nameEn', key: 'nameEn' },
-          { title: 'Name (AR)', dataIndex: 'nameAr', key: 'nameAr' },
-          {
-            title: 'Type',
-            dataIndex: 'type',
-            key: 'type',
-            render: (type: LocationItem['type']) => <Tag>{TYPE_LABEL[type]}</Tag>,
-          },
-          { title: 'Order', dataIndex: 'displayOrder', key: 'displayOrder', width: 90 },
-          {
-            title: 'Active',
-            dataIndex: 'isActive',
-            key: 'isActive',
-            width: 110,
-            render: (isActive: boolean, row: LocationItem) => (
-              <Switch
-                checked={isActive}
-                onChange={async (checked) => {
-                  await updateLocation({ id: row._id, isActive: checked });
-                  message.success(checked ? 'Activated.' : 'Deactivated.');
-                }}
-              />
-            ),
-          },
-        ]}
-      />
+      <div className="overflow-hidden rounded-xl border border-brand-border bg-white shadow-sm">
+        <Table<Row>
+          loading={isLoading}
+          dataSource={rows}
+          pagination={false}
+          size="middle"
+          scroll={{ x: 640 }}
+          rowClassName={(r) => (r.type === 'governorate' ? 'bg-brand-primary-soft/60' : '')}
+          columns={[
+            {
+              title: 'Name (EN)',
+              dataIndex: 'nameEn',
+              key: 'nameEn',
+              render: (_: string, r) => (
+                <div className="flex items-center" style={{ paddingLeft: r.depth * 28 }}>
+                  {r.depth > 0 ? (
+                    <span className="mr-2 inline-block h-4 w-3 shrink-0 rounded-bl border-b border-l border-brand-border" />
+                  ) : null}
+                  <span
+                    className={
+                      r.type === 'governorate'
+                        ? 'font-bold text-brand-primary'
+                        : r.type === 'city'
+                          ? 'font-semibold text-brand-ink'
+                          : 'text-brand-ink'
+                    }
+                  >
+                    {r.nameEn}
+                  </span>
+                  {r.childCount > 0 ? (
+                    <span className="ml-2 text-xs text-brand-muted">({r.childCount})</span>
+                  ) : null}
+                </div>
+              ),
+            },
+            {
+              title: 'Name (AR)',
+              dataIndex: 'nameAr',
+              key: 'nameAr',
+              width: 200,
+              align: 'right',
+              render: (v: string) => (
+                <span dir="rtl" className="font-arabic text-base">
+                  {v}
+                </span>
+              ),
+            },
+            {
+              title: 'Type',
+              dataIndex: 'type',
+              key: 'type',
+              width: 140,
+              render: (type: LocationItem['type']) => (
+                <Tag
+                  className="m-0 min-w-[96px] text-center"
+                  color={type === 'governorate' ? 'blue' : type === 'city' ? 'cyan' : 'default'}
+                >
+                  {TYPE_LABEL[type]}
+                </Tag>
+              ),
+            },
+            {
+              title: 'Order',
+              dataIndex: 'displayOrder',
+              key: 'displayOrder',
+              width: 90,
+              align: 'center',
+            },
+            {
+              title: 'Active',
+              dataIndex: 'isActive',
+              key: 'isActive',
+              width: 100,
+              align: 'center',
+              render: (isActive: boolean, row) => (
+                <Switch
+                  checked={isActive}
+                  onChange={async (checked) => {
+                    await updateLocation({ id: row._id, isActive: checked });
+                    message.success(checked ? 'Activated.' : 'Deactivated.');
+                  }}
+                />
+              ),
+            },
+          ]}
+        />
+      </div>
 
       <Modal
         title="Add location"
