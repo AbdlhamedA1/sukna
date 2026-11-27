@@ -2,6 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  async redirects() {
+    return [
+      { source: '/buildings', destination: '/apartments', permanent: false },
+      { source: '/buildings/:id', destination: '/apartments', permanent: false },
+    ];
+  },
   async headers() {
     return [
       {

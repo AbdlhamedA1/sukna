@@ -6,15 +6,14 @@ import { apiFetch } from '../../lib/api';
 import { HeroSearch } from '../locations/HeroSearch';
 
 export function Hero() {
-  const [stats, setStats] = useState<{ buildings: number; homes: number } | null>(null);
+  const [stats, setStats] = useState<{ homes: number } | null>(null);
 
   useEffect(() => {
     Promise.all([
-      apiFetch<{ data: { pagination: { total: number } } }>('/buildings?limit=1'),
       apiFetch<{ data: { pagination: { total: number } } }>('/apartments?limit=1'),
     ])
-      .then(([b, a]) => {
-        setStats({ buildings: b.data.pagination.total, homes: a.data.pagination.total });
+      .then(([a]) => {
+        setStats({ homes: a.data.pagination.total });
       })
       .catch(() => undefined);
   }, []);
@@ -40,9 +39,9 @@ export function Hero() {
           </div>
           <div className="mt-8 flex flex-wrap gap-x-10 gap-y-4">
             {[
-              [stats ? String(stats.buildings) : '-', 'Verified buildings'],
               [stats ? String(stats.homes) : '-', 'Homes listed'],
               ['3', 'Governorates'],
+              ['Free', 'To browse'],
             ].map(([n, l]) => (
               <div key={l}>
                 <p className="text-3xl font-extrabold text-brand-primary">{n}</p>
