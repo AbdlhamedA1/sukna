@@ -35,21 +35,6 @@ export function WhySukna() {
             </div>
           ))}
         </div>
-
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 rounded-2xl bg-brand-primary p-8 text-center sm:flex-row sm:text-left">
-          <div>
-            <h3 className="text-xl font-bold text-white">Own a building?</h3>
-            <p className="mt-1 text-sm text-white/80">
-              Create an account and list your apartments to reach people searching right now.
-            </p>
-          </div>
-          <a
-            href="/register"
-            className="shrink-0 rounded-lg bg-brand-accent px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-accent-hover"
-          >
-            List your property
-          </a>
-        </div>
       </div>
     </section>
   );

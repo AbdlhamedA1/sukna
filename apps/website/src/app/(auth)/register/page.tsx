@@ -36,8 +36,8 @@ export default function RegisterPage() {
         }),
       });
       router.push(`/verify-email?email=${encodeURIComponent(String(form.get('email')))}`);
-    } catch {
-      setError('Registration failed. Please check your details and try again.');
+    } catch (e) {
+      setError(e instanceof Error && !e.message.startsWith('API request failed') ? e.message : 'Registration failed. Please check your details and try again.');
     } finally {
       setLoading(false);
     }
