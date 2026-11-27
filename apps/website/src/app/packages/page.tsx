@@ -14,7 +14,7 @@ interface Pkg {
   isFeatured: boolean;
 }
 
-const WHATSAPP = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '').replace(/\D/g, '');
+const WHATSAPP = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '201150578533').replace(/\D/g, '');
 
 export default function PackagesPage() {
   const [pkgs, setPkgs] = useState<Pkg[] | null>(null);
