@@ -6,7 +6,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
     <main className="flex min-h-screen flex-col bg-brand-surface lg:flex-row">
       {/* Brand panel: full-width banner on small screens, side panel on large. */}
       <aside className="relative flex flex-col items-center justify-center gap-3 bg-brand-primary px-6 py-10 text-center text-white lg:w-[42%] lg:py-0">
-        <Logo className="h-16" />
+        <Logo variant="white" className="h-14" />
         <p className="max-w-xs text-sm text-white/80">
           Verified student and residential housing across Qena, Sohag, and Minya.
         </p>
