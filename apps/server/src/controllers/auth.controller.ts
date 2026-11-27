@@ -228,7 +228,7 @@ export async function forgotPassword(req: Request, res: Response, next: NextFunc
 
     if (!env.emailVerificationRequired) {
       throw httpError(
-        503,
+        400,
         'Password reset by email is not available right now. Please contact SUKNA on WhatsApp and we will help you.',
       );
     }
