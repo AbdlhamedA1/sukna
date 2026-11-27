@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import * as apartmentController from '../controllers/apartment.controller.js';
+import * as areaController from '../controllers/area.controller.js';
 import * as buildingController from '../controllers/building.controller.js';
 import { requireAdmin, requireAuth, requireVerified } from '../middleware/auth.js';
 import { csrfHeaderGuard } from '../middleware/csrf.js';
@@ -22,6 +23,7 @@ export const apartmentRouter = Router();
 // ---- Buildings ----
 buildingRouter.get('/', validateQuery(buildingQuerySchema), buildingController.listBuildings);
 buildingRouter.get('/admin/all', requireAuth, requireAdmin, buildingController.listBuildingsAdmin);
+buildingRouter.get('/:id/area', areaController.getBuildingArea);
 buildingRouter.get('/:id', buildingController.getBuilding);
 buildingRouter.post(
   '/',

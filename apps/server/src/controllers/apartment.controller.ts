@@ -85,7 +85,7 @@ export async function listApartments(req: Request, res: Response, next: NextFunc
     const [items, total] = await Promise.all([
       Apartment.find(filter)
         .select(PUBLIC_PROJECTION)
-        .populate('buildingId', 'name streetAddress googleMapsUrl governorateId cityId areaId')
+        .populate('buildingId', 'name streetAddress googleMapsUrl governorateId cityId areaId location')
         .sort(SORTS[q.sortBy] ?? SORTS.newest)
         .skip((q.page - 1) * q.limit)
         .limit(q.limit),

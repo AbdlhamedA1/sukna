@@ -6,6 +6,8 @@ import { AdvertisingOrder } from '../models/AdvertisingOrder.js';
 import { Apartment } from '../models/Apartment.js';
 import { AuditLog } from '../models/AuditLog.js';
 import { Building } from '../models/Building.js';
+import { Landmark } from '../models/Landmark.js';
+import { coordsFromMapsUrl } from '../utils/geo.js';
 import { PaymentRecord } from '../models/PaymentRecord.js';
 import { User } from '../models/User.js';
 
@@ -149,6 +151,44 @@ export async function listAuditLogs(req: Request, res: Response, next: NextFunct
       success: true,
       data: { logs, pagination: { page, limit, total, pages: Math.ceil(total / limit) } },
     });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function listLandmarksAdmin(_req: Request, res: Response, next: NextFunction) {
+  try {
+    res.json({ success: true, data: { landmarks: await Landmark.find().sort({ name: 1 }) } });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/** Create or update a landmark from a pasted Google Maps link (coordinates are read from it). */
+export async function saveLandmark(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { name, type, mapsUrl, isActive } = req.body as {
+      name?: string;
+      type?: 'university_gate' | 'other';
+      mapsUrl?: string;
+      isActive?: boolean;
+    };
+    const id = req.params.id;
+    const doc = id ? await Landmark.findById(id) : new Landmark({});
+    if (!doc) throw httpError(404, 'Landmark not found.');
+    if (name !== undefined) doc.name = name;
+    if (type !== undefined) doc.type = type;
+    if (isActive !== undefined) doc.isActive = isActive;
+    if (mapsUrl) {
+      const c = await coordsFromMapsUrl(mapsUrl);
+      if (!c) throw httpError(400, 'Could not read coordinates from that Google Maps link. Open the place in Google Maps and copy the full link.');
+      doc.lat = c.lat;
+      doc.lng = c.lng;
+    } else if (!id) {
+      throw httpError(400, 'A Google Maps link is required.');
+    }
+    await doc.save();
+    res.status(id ? 200 : 201).json({ success: true, data: { landmark: doc } });
   } catch (err) {
     next(err);
   }

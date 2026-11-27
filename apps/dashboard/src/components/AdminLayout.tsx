@@ -1,4 +1,5 @@
 import {
+  AimOutlined,
   ApartmentOutlined,
   AuditOutlined,
   DashboardOutlined,
@@ -25,6 +26,7 @@ const ITEMS = [
   { key: '/buildings', icon: <HomeOutlined />, label: 'Buildings' },
   { key: '/apartments', icon: <ApartmentOutlined />, label: 'Apartments' },
   { key: '/locations', icon: <EnvironmentOutlined />, label: 'Locations' },
+  { key: '/landmarks', icon: <AimOutlined />, label: 'Landmarks' },
   { key: '/packages', icon: <GiftOutlined />, label: 'Packages' },
   { key: '/orders', icon: <DollarOutlined />, label: 'Orders' },
   { key: '/users', icon: <TeamOutlined />, label: 'Users' },

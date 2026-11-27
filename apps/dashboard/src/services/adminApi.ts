@@ -64,6 +64,15 @@ export interface AuditItem {
   createdAt: string;
 }
 
+export interface LandmarkItem {
+  _id: string;
+  name: string;
+  type: 'university_gate' | 'other';
+  lat: number;
+  lng: number;
+  isActive: boolean;
+}
+
 interface Pagination {
   page: number;
   limit: number;
@@ -115,6 +124,22 @@ export const adminApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Order'],
     }),
+    getLandmarks: b.query<LandmarkItem[], void>({
+      query: () => '/admin/landmarks',
+      transformResponse: (r: { data: { landmarks: LandmarkItem[] } }) => r.data.landmarks,
+      providesTags: ['Location'],
+    }),
+    saveLandmark: b.mutation<
+      void,
+      { id?: string; name?: string; type?: string; mapsUrl?: string; isActive?: boolean }
+    >({
+      query: ({ id, ...body }) => ({
+        url: id ? `/admin/landmarks/${id}` : '/admin/landmarks',
+        method: id ? 'PUT' : 'POST',
+        body,
+      }),
+      invalidatesTags: ['Location'],
+    }),
     getUsers: b.query<{ users: UserItem[]; pagination: Pagination }, { page: number; search: string }>({
       query: ({ page, search }) => ({ url: '/admin/users', params: { page, search } }),
       transformResponse: (r: { data: { users: UserItem[]; pagination: Pagination } }) => r.data,
@@ -144,6 +169,8 @@ export const {
   useCreateOrderMutation,
   useCancelOrderMutation,
   useSettleOrderMutation,
+  useGetLandmarksQuery,
+  useSaveLandmarkMutation,
   useGetUsersQuery,
   useSetUserStatusMutation,
   useGetAuditLogsQuery,

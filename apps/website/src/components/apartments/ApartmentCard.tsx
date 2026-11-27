@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import type { ApartmentListItem } from '../../types/apartments';
 
+import { distanceMeters, formatDistance, useLandmarks } from '../../lib/geo';
 import { FavoriteButton } from './FavoriteButton';
 
 const RENTAL_LABEL = { entire: 'Entire place', shared: 'Shared', private_room: 'Private room' };
@@ -12,6 +13,13 @@ const FURNISHED_LABEL = {
 };
 
 export function ApartmentCard({ apartment }: { apartment: ApartmentListItem }) {
+  const landmarks = useLandmarks();
+  const here = apartment.buildingId.location;
+  const nearest = here
+    ? landmarks
+        .map((l) => ({ name: l.name, m: distanceMeters(here, l) }))
+        .sort((a, b) => a.m - b.m)[0]
+    : undefined;
   return (
     <Link
       href={`/apartments/${apartment._id}`}
@@ -47,6 +55,11 @@ export function ApartmentCard({ apartment }: { apartment: ApartmentListItem }) {
         <p className="line-clamp-1 text-sm text-brand-muted">
           {apartment.buildingId.name} &middot; {apartment.buildingId.streetAddress}
         </p>
+        {nearest && nearest.m <= 8000 ? (
+          <p className="line-clamp-1 text-xs font-semibold text-brand-primary">
+            {formatDistance(nearest.m)} from {nearest.name}
+          </p>
+        ) : null}
         <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-brand-muted">
           <span>{apartment.bedrooms} bed</span>
           <span>{apartment.bathrooms} bath</span>

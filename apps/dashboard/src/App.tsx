@@ -13,6 +13,7 @@ import { UsersPage } from './pages/UsersPage';
 import { ApartmentsPage } from './pages/ApartmentsPage';
 import { BuildingsPage } from './pages/BuildingsPage';
 import { HomePage } from './pages/HomePage';
+import { LandmarksPage } from './pages/LandmarksPage';
 import { LocationsPage } from './pages/LocationsPage';
 import { LoginPage } from './pages/LoginPage';
 import { NotFoundPage } from './pages/NotFoundPage';
@@ -35,6 +36,7 @@ export default function App() {
               <Route path="/buildings" element={<BuildingsPage />} />
               <Route path="/apartments" element={<ApartmentsPage />} />
               <Route path="/locations" element={<LocationsPage />} />
+              <Route path="/landmarks" element={<LandmarksPage />} />
               <Route path="/packages" element={<PackagesPage />} />
               <Route path="/orders" element={<OrdersPage />} />
               <Route path="/users" element={<UsersPage />} />

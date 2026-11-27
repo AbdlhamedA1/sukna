@@ -14,6 +14,7 @@ export interface ApartmentListItem {
     name: string;
     streetAddress: string;
     googleMapsUrl: string;
+    location?: { lat: number; lng: number } | null;
   };
 }
 

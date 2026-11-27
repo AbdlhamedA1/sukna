@@ -4,6 +4,7 @@ import { Image } from 'antd';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import { AreaInfo } from '../../../components/apartments/AreaInfo';
 import { FavoriteButton } from '../../../components/apartments/FavoriteButton';
 import { apiFetch } from '../../../lib/api';
 
@@ -209,6 +210,8 @@ export default function ApartmentDetailPage() {
                 </span>
               </a>
             </div>
+
+            <AreaInfo buildingId={apartment.buildingId._id} />
 
             <div className="rounded-2xl border border-brand-border bg-white p-5">
               <h2 className="font-bold text-brand-primary">Landlord contact</h2>

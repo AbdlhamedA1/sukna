@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import { listLandmarks } from '../controllers/area.controller.js';
 import { getHealth } from '../controllers/health.controller.js';
 import { adminRouter } from './admin.routes.js';
 import { favoriteRouter } from './favorite.routes.js';
@@ -22,3 +23,4 @@ apiV1Router.use('/apartments', apartmentRouter);
 apiV1Router.use('/monetization', monetizationRouter);
 apiV1Router.use('/favorites', favoriteRouter);
 apiV1Router.use('/admin', adminRouter);
+apiV1Router.get('/landmarks', listLandmarks);

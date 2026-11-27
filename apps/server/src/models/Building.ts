@@ -1,5 +1,7 @@
 import { Schema, model, type Document, type Types } from 'mongoose';
 
+import { coordsFromMapsUrl } from '../utils/geo.js';
+
 export interface IBuilding extends Document {
   name: string;
   description: string;
@@ -12,6 +14,12 @@ export interface IBuilding extends Document {
   areaId: Types.ObjectId;
   streetAddress: string;
   googleMapsUrl: string;
+  location: { lat: number; lng: number } | null;
+  services: {
+    computedAt: Date;
+    counts: Record<string, number>;
+    level: 'well_served' | 'some' | 'far';
+  } | null;
   isActive: boolean;
   isArchived: boolean;
   isDeleted: boolean;
@@ -41,6 +49,10 @@ const buildingSchema = new Schema<IBuilding>(
       required: true,
       match: [GOOGLE_MAPS_URL_REGEX, 'Must be a Google Maps URL.'],
     },
+    // Derived from googleMapsUrl on save; null when the link carries no coordinates.
+    location: { type: new Schema({ lat: Number, lng: Number }, { _id: false }), default: null },
+    // Cached nearby-services summary (OpenStreetMap), refreshed lazily.
+    services: { type: Schema.Types.Mixed, default: null },
     isActive: { type: Boolean, required: true, default: true },
     isArchived: { type: Boolean, required: true, default: false },
     isDeleted: { type: Boolean, required: true, default: false },
@@ -48,6 +60,13 @@ const buildingSchema = new Schema<IBuilding>(
   },
   { timestamps: true },
 );
+
+buildingSchema.pre('save', async function resolveLocation() {
+  if (this.isNew || this.isModified('googleMapsUrl')) {
+    this.location = await coordsFromMapsUrl(this.googleMapsUrl);
+    this.services = null;
+  }
+});
 
 buildingSchema.index({ governorateId: 1, cityId: 1, areaId: 1, isDeleted: 1, isActive: 1 });
 buildingSchema.index({ isDeleted: 1, isArchived: 1, isActive: 1 });
