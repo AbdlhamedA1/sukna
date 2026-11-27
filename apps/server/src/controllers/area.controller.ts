@@ -56,7 +56,10 @@ async function fetchCounts(p: LatLng): Promise<Record<string, number> | null> {
   return null;
 }
 
-function levelOf(counts: Record<string, number>): 'well_served' | 'some' | 'far' {
+function levelOf(counts: Record<string, number>): 'well_served' | 'some' | 'far' | 'unknown' {
+  const total = Object.values(counts).reduce((a, b) => a + b, 0);
+  // OpenStreetMap is sparse in parts of Upper Egypt. No data is not the same as no services.
+  if (total === 0) return 'unknown';
   const present = Object.values(counts).filter((n) => n > 0).length;
   return present >= 4 ? 'well_served' : present >= 2 ? 'some' : 'far';
 }
@@ -94,7 +97,8 @@ export async function getBuildingArea(req: Request, res: Response, next: NextFun
         await Building.updateOne({ _id: building._id }, { $set: { services } });
       }
     }
-    res.json({ success: true, data: { hasLocation: true, radiusMeters: RADIUS_M, landmarks, services } });
+    const out = services ? { ...services, level: levelOf(services.counts) } : null; // re-derive so old caches pick up rule changes
+    res.json({ success: true, data: { hasLocation: true, radiusMeters: RADIUS_M, landmarks, services: out } });
   } catch (err) {
     next(err);
   }

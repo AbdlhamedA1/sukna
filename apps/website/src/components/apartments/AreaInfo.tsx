@@ -9,13 +9,14 @@ interface Area {
   hasLocation: boolean;
   radiusMeters?: number;
   landmarks: { name: string; meters: number; walkMinutes: number }[];
-  services: { counts: Record<string, number>; level: 'well_served' | 'some' | 'far' } | null;
+  services: { counts: Record<string, number>; level: 'well_served' | 'some' | 'far' | 'unknown' } | null;
 }
 
 const LEVEL = {
   well_served: { label: 'Well served', cls: 'bg-emerald-100 text-emerald-800' },
   some: { label: 'Some services nearby', cls: 'bg-amber-100 text-amber-800' },
   far: { label: 'Far from services', cls: 'bg-rose-100 text-rose-800' },
+  unknown: { label: 'No map data for this area yet', cls: 'bg-gray-100 text-gray-700' },
 } as const;
 
 const LABEL: Record<string, string> = {
@@ -62,6 +63,7 @@ export function AreaInfo({ buildingId }: { buildingId: string }) {
       {area.services && lvl && (
         <div className="mt-4 border-t border-brand-border pt-4">
           <span className={`inline-block rounded-full px-3 py-1 text-sm font-semibold ${lvl.cls}`}>{lvl.label}</span>
+          {area.services.level === 'unknown' ? null : (
           <ul className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 text-sm text-brand-muted">
             {Object.entries(LABEL).map(([k, name]) => (
               <li key={k} className={area.services!.counts[k] ? 'text-brand-ink' : ''}>
@@ -70,6 +72,7 @@ export function AreaInfo({ buildingId }: { buildingId: string }) {
               </li>
             ))}
           </ul>
+          )}
           <p className="mt-3 text-xs text-brand-muted">
             Within {area.radiusMeters} m. Distances are straight-line. Services come from OpenStreetMap and may miss small shops.
           </p>

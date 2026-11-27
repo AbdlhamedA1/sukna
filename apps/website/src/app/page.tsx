@@ -1,4 +1,5 @@
 import { AuthNav } from '../components/layout/AuthNav';
+import { PackagesTeaser } from '../components/landing/PackagesTeaser';
 import { ContactOwners } from '../components/landing/ContactOwners';
 import { Footer } from '../components/landing/Footer';
 import { FeaturedHomes } from '../components/landing/FeaturedHomes';
@@ -33,6 +34,7 @@ export default function HomePage() {
 
       <FeaturedHomes />
       <WhySukna />
+      <PackagesTeaser />
       <ContactOwners />
       <Footer />
     </main>
