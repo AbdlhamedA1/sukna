@@ -114,7 +114,7 @@ export function LocationsPage() {
           dataSource={rows}
           pagination={false}
           size="middle"
-          scroll={{ x: 640 }}
+          scroll={{ x: 720 }}
           rowClassName={(r) => (r.type === 'governorate' ? 'bg-brand-primary-soft/60' : '')}
           columns={[
             {
@@ -122,7 +122,7 @@ export function LocationsPage() {
               dataIndex: 'nameEn',
               key: 'nameEn',
               render: (_: string, r) => (
-                <div className="flex items-center" style={{ paddingLeft: r.depth * 28 }}>
+                <div className="flex items-center whitespace-nowrap" style={{ paddingLeft: r.depth * 28 }}>
                   {r.depth > 0 ? (
                     <span className="mr-2 inline-block h-4 w-3 shrink-0 rounded-bl border-b border-l border-brand-border" />
                   ) : null}
