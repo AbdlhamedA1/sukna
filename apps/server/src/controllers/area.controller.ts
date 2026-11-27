@@ -19,33 +19,41 @@ const CATEGORIES: Record<string, string> = {
   transport: 'highway=bus_stop',
 };
 
+const OVERPASS_ENDPOINTS = [
+  'https://overpass.openstreetmap.fr/api/interpreter',
+  'https://overpass-api.de/api/interpreter',
+];
+
 async function fetchCounts(p: LatLng): Promise<Record<string, number> | null> {
   const body = `[out:json][timeout:15];(${Object.entries(CATEGORIES)
     .map(([k, f]) => `nwr[${f}](around:${RADIUS_M},${p.lat},${p.lng});`)
     .join('')});out tags center 200;`;
-  try {
-    const res = await fetch('https://overpass-api.de/api/interpreter', {
-      method: 'POST',
-      body: `data=${encodeURIComponent(body)}`,
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'SuknaBot/1.0' },
-      signal: AbortSignal.timeout(20000),
-    });
-    if (!res.ok) return null;
-    const json = (await res.json()) as { elements: { tags?: Record<string, string> }[] };
-    const counts: Record<string, number> = Object.fromEntries(Object.keys(CATEGORIES).map((k) => [k, 0]));
-    for (const el of json.elements) {
-      const t = el.tags ?? {};
-      if (t.shop && /^(supermarket|convenience|bakery|greengrocer|butcher|mall|general)$/.test(t.shop)) counts.grocery += 1;
-      else if (t.amenity === 'pharmacy') counts.pharmacy += 1;
-      else if (t.amenity && /^(clinic|hospital|doctors|dentist)$/.test(t.amenity)) counts.health += 1;
-      else if (t.amenity && /^(restaurant|cafe|fast_food)$/.test(t.amenity)) counts.food += 1;
-      else if (t.amenity === 'bank' || t.amenity === 'atm') counts.money += 1;
-      else if (t.highway === 'bus_stop') counts.transport += 1;
+  for (const endpoint of OVERPASS_ENDPOINTS) {
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        body: `data=${encodeURIComponent(body)}`,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'SuknaStudentHousing/1.0' },
+        signal: AbortSignal.timeout(12000),
+      });
+      if (!res.ok) continue;
+      const json = (await res.json()) as { elements: { tags?: Record<string, string> }[] };
+      const counts: Record<string, number> = Object.fromEntries(Object.keys(CATEGORIES).map((k) => [k, 0]));
+      for (const el of json.elements) {
+        const t = el.tags ?? {};
+        if (t.shop && /^(supermarket|convenience|bakery|greengrocer|butcher|mall|general)$/.test(t.shop)) counts.grocery += 1;
+        else if (t.amenity === 'pharmacy') counts.pharmacy += 1;
+        else if (t.amenity && /^(clinic|hospital|doctors|dentist)$/.test(t.amenity)) counts.health += 1;
+        else if (t.amenity && /^(restaurant|cafe|fast_food)$/.test(t.amenity)) counts.food += 1;
+        else if (t.amenity === 'bank' || t.amenity === 'atm') counts.money += 1;
+        else if (t.highway === 'bus_stop') counts.transport += 1;
+      }
+      return counts;
+    } catch {
+      /* try the next mirror */
     }
-    return counts;
-  } catch {
-    return null;
   }
+  return null;
 }
 
 function levelOf(counts: Record<string, number>): 'well_served' | 'some' | 'far' {
