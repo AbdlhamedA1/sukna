@@ -5,25 +5,20 @@ import { useEffect, useState } from 'react';
 import { apiFetch } from '../../lib/api';
 import { HeroSearch } from '../locations/HeroSearch';
 
-interface B { _id: string; name: string; mainImage: string; streetAddress: string }
-
 export function Hero() {
-  const [buildings, setBuildings] = useState<B[]>([]);
   const [stats, setStats] = useState<{ buildings: number; homes: number } | null>(null);
 
   useEffect(() => {
     Promise.all([
-      apiFetch<{ data: { buildings: B[]; pagination: { total: number } } }>('/buildings?limit=3'),
+      apiFetch<{ data: { pagination: { total: number } } }>('/buildings?limit=1'),
       apiFetch<{ data: { pagination: { total: number } } }>('/apartments?limit=1'),
     ])
       .then(([b, a]) => {
-        setBuildings(b.data.buildings);
         setStats({ buildings: b.data.pagination.total, homes: a.data.pagination.total });
       })
       .catch(() => undefined);
   }, []);
 
-  const [a, b, c] = buildings;
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-[#EAF3F4] via-white to-white">
       <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-brand-teal/20 blur-3xl" />
@@ -57,27 +52,10 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="relative mx-auto hidden h-[520px] w-full max-w-xl lg:block">
-          <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-br from-brand-primary to-[#1E5A7A] opacity-95" />
-          {[a, b, c].map((x, i) =>
-            x ? (
-              <a
-                key={x._id}
-                href={`/buildings/${x._id}`}
-                className={`absolute block overflow-hidden rounded-3xl border-4 border-white shadow-2xl transition hover:scale-[1.03] ${
-                  i === 0 ? 'left-6 top-8 h-72 w-64 animate-floaty' : i === 1 ? 'right-6 top-24 h-64 w-60 animate-floaty [animation-delay:1.5s]' : 'bottom-8 left-24 h-52 w-72 animate-floaty [animation-delay:3s]'
-                }`}
-              >
-                <img src={x.mainImage} alt={x.name} className="h-full w-full object-cover" loading="eager" />
-                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 text-sm font-semibold text-white">{x.name}</span>
-              </a>
-            ) : null,
-          )}
-          {!a && <div className="absolute inset-0 flex items-center justify-center"><img src="/logo-h-white.png" alt="" className="h-20 w-auto opacity-90" /></div>}
-          <div className="absolute -left-4 bottom-24 rounded-2xl bg-white px-4 py-3 shadow-xl">
-            <p className="text-xs text-brand-muted">Every building</p>
-            <p className="font-bold text-brand-primary">Reviewed by our team</p>
-          </div>
+        <div className="relative mx-auto flex aspect-[4/3] w-full max-w-xl items-center justify-center overflow-hidden rounded-[2.5rem] border border-brand-border bg-gradient-to-br from-white via-[#EEF5F6] to-[#DCEBEE] shadow-2xl lg:aspect-square">
+          <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-brand-teal/25 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-brand-primary/15 blur-3xl" />
+          <img src="/logo-h.png" alt="SUKNA" className="relative w-[78%] animate-floaty object-contain" loading="eager" />
         </div>
       </div>
     </section>
