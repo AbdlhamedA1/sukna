@@ -11,6 +11,9 @@ export function AuthNav() {
   if (user) {
     return (
       <nav className="flex items-center gap-2 sm:gap-3">
+        <a href="/buildings" className={`${link} hidden sm:inline-block`}>
+          Buildings
+        </a>
         <a href="/saved" className={link}>
           Saved
         </a>
@@ -29,6 +32,9 @@ export function AuthNav() {
   }
   return (
     <nav className="flex items-center gap-2 sm:gap-3">
+      <a href="/buildings" className={`${link} hidden sm:inline-block`}>
+        Buildings
+      </a>
       <a href="/login" className={link}>
         Log in
       </a>

@@ -57,7 +57,7 @@ export function BuildingsPage() {
         streetAddress: values.streetAddress,
         googleMapsUrl: values.googleMapsUrl,
       }).unwrap();
-      message.success('Building created.');
+      message.success('Building created. It is now on the website under Buildings. Add apartments to it so they show in search.');
       setModalOpen(false);
       form.resetFields();
     } catch {
