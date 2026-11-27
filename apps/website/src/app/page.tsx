@@ -1,3 +1,4 @@
+import { BuildingsStrip } from '../components/landing/BuildingsStrip';
 import { ContactOwners } from '../components/landing/ContactOwners';
 import { FeaturedHomes } from '../components/landing/FeaturedHomes';
 import { Footer } from '../components/landing/Footer';
@@ -19,6 +20,7 @@ export default function HomePage() {
       </header>
       <Hero />
       <FeaturedHomes />
+      <BuildingsStrip />
       <HowItWorks />
       <WhySukna />
       <PackagesTeaser />
