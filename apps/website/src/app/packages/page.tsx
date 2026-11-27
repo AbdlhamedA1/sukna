@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { AuthNav } from '../../components/layout/AuthNav';
 import { apiFetch } from '../../lib/api';
 import { whatsappLink } from '../../lib/contact';
+import { Logo } from '../../components/Logo';
 
 interface Pkg {
   _id: string;
@@ -29,7 +30,7 @@ export default function PackagesPage() {
     <main className="min-h-screen bg-brand-surface pb-16">
       <header className="border-b border-brand-border bg-white">
         <div className="mx-auto flex w-full max-w-container items-center justify-between px-4 py-4 sm:px-8">
-          <a href="/" className="text-xl font-bold text-brand-primary">SUKNA</a>
+          <Logo />
           <AuthNav />
         </div>
       </header>

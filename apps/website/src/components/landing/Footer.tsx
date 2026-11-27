@@ -1,11 +1,10 @@
+import { Logo } from '../Logo';
 export function Footer() {
   return (
     <footer className="bg-brand-primary text-white">
       <div className="mx-auto grid w-full max-w-container gap-8 px-4 py-12 sm:grid-cols-2 sm:px-8 lg:grid-cols-4">
         <div className="lg:col-span-2">
-          <p className="text-xl font-bold">
-            SUKNA <span className="font-arabic">سُكنا</span>
-          </p>
+          <Logo variant="white" className="h-12" />
           <p className="mt-3 max-w-sm text-sm text-white/70">
             Verified housing discovery for Qena, Sohag and Minya.
           </p>

@@ -5,14 +5,13 @@ import { Footer } from '../components/landing/Footer';
 import { FeaturedHomes } from '../components/landing/FeaturedHomes';
 import { WhySukna } from '../components/landing/WhySukna';
 import { HeroSearch } from '../components/locations/HeroSearch';
+import { Logo } from '../components/Logo';
 
 export default function HomePage() {
   return (
     <main className="flex min-h-screen flex-col bg-brand-surface">
       <header className="mx-auto flex w-full max-w-container items-center justify-between px-4 py-5 sm:px-8">
-        <span className="text-xl font-bold text-brand-primary">
-          SUKNA <span className="font-arabic">سُكنا</span>
-        </span>
+        <Logo />
         <AuthNav />
       </header>
 

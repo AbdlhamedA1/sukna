@@ -6,6 +6,7 @@ import { FormField } from '../../components/auth/FormField';
 import { SubmitButton } from '../../components/auth/SubmitButton';
 import { apiFetch } from '../../lib/api';
 import { logoutAndGoHome, useSession } from '../../lib/session';
+import { Logo } from '../../components/Logo';
 
 export default function ProfilePage() {
   const user = useSession();
@@ -51,9 +52,7 @@ export default function ProfilePage() {
     <main className="min-h-screen bg-brand-surface">
       <header className="border-b border-brand-border bg-white">
         <div className="mx-auto flex w-full max-w-container items-center justify-between px-4 py-4 sm:px-8">
-          <a href="/" className="text-xl font-bold text-brand-primary">
-            SUKNA <span className="font-arabic">سُكنا</span>
-          </a>
+          <Logo />
           <a href="/apartments" className="text-sm font-semibold text-brand-primary hover:underline">
             Browse homes
           </a>

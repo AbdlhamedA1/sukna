@@ -1,13 +1,12 @@
 import Link from 'next/link';
+import { Logo } from '../../components/Logo';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <main className="flex min-h-screen flex-col bg-brand-surface lg:flex-row">
       {/* Brand panel: full-width banner on small screens, side panel on large. */}
       <aside className="relative flex flex-col items-center justify-center gap-3 bg-brand-primary px-6 py-10 text-center text-white lg:w-[42%] lg:py-0">
-        <Link href="/" className="text-3xl font-bold tracking-tight">
-          SUKNA <span className="font-arabic">سُكنا</span>
-        </Link>
+        <Logo className="h-16" />
         <p className="max-w-xs text-sm text-white/80">
           Verified student and residential housing across Qena, Sohag, and Minya.
         </p>
